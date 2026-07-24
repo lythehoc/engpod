@@ -41,6 +41,9 @@ Episode metadata and transcripts were adapted from
 [huynhthientung/english-pod](https://github.com/huynhthientung/english-pod).
 Audio is served by
 [Internet Archive](https://archive.org/details/englishpod_all).
+The motivational tagline uses
+[Patrick Hand](https://fonts.google.com/specimen/Patrick+Hand), distributed
+under the included [SIL Open Font License](public/fonts/PatrickHand-OFL.txt).
 
 This is an independent educational project. It is not affiliated with or
 endorsed by EnglishPod.
