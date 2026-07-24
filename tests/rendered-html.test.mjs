@@ -113,7 +113,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
-  assert.match(styles, /grid-template-columns: minmax\(72px, 100px\) minmax\(0, 1fr\)/);
+  assert.match(styles, /grid-template-columns: max-content minmax\(0, 1fr\)/);
+  assert.match(styles, /\.speaker \{[\s\S]*?min-width: 32px;[\s\S]*?max-width: min\(126px, 32vw\);/);
   assert.match(layout, /Content-Security-Policy/);
   assert.match(layout, /PatrickHand-Regular\.ttf/);
   assert.doesNotMatch(workflow, /AUDIO_BASE_URL/);
