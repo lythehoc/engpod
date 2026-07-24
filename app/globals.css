@@ -381,12 +381,6 @@ select:focus-visible {
   font: 650 11px var(--font-geist-mono), monospace;
 }
 
-.episode-row.is-active .episode-number {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: white;
-}
-
 .episode-copy {
   min-width: 0;
   display: grid;

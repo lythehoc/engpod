@@ -175,7 +175,7 @@ function EpisodeRow({
         aria-current={active ? "true" : undefined}
       >
         <span className="episode-number" aria-hidden="true">
-          {active ? "▶" : episode.id}
+          {episode.id}
         </span>
         <span className="episode-copy">
           <strong>{episode.title}</strong>

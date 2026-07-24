@@ -116,6 +116,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /Mark episode as finished/);
   assert.match(page, /className=\{`episode-complete \$\{completed \? "is-finished" : ""\}`\}/);
   assert.match(page, /onToggleCompleted=\{updateCompleted\}/);
+  assert.match(page, /<span className="episode-number" aria-hidden="true">\s*\{episode\.id\}/);
+  assert.doesNotMatch(page, /active \? "▶" : episode\.id/);
   assert.doesNotMatch(page, /now-label|>NOW</);
   assert.match(page, /updateCompleted\(currentId, true\)/);
   assert.match(page, /orderedCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
@@ -165,6 +167,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.episode-complete \{[^}]*background: var\(--surface-2\);[^}]*color: var\(--muted\);/);
   assert.doesNotMatch(styles, /\.episode-complete \{[^}]*var\(--accent/);
   assert.match(styles, /\.episode-complete\.is-finished \{[^}]*background: var\(--accent\);/);
+  assert.doesNotMatch(styles, /\.episode-row\.is-active \.episode-number/);
   assert.doesNotMatch(styles, /\.now-label|\.complete-toggle/);
   assert.match(styles, /\.speed-value \{[^}]*var\(--font-geist-mono\)/);
   assert.match(styles, /grid-template-columns: max-content minmax\(0, 1fr\)/);
