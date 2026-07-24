@@ -36,11 +36,14 @@ test("renders the finished engpod library", async () => {
 
 test("ships all episodes, transcripts, and the GitHub Pages workflow", async () => {
   const root = new URL("../", import.meta.url);
-  const [catalog, transcriptNames, workflow, socialCard] = await Promise.all([
+  const [catalog, transcriptNames, workflow, socialCard, handwritingFont, fontLicense] =
+    await Promise.all([
     readFile(new URL("app/data/episodes.json", root), "utf8"),
     readdir(new URL("public/transcripts/", root)),
     readFile(new URL(".github/workflows/deploy.yml", root), "utf8"),
     stat(new URL("public/og.png", root)),
+    stat(new URL("app/fonts/PatrickHand-Regular.ttf", root)),
+    stat(new URL("public/fonts/PatrickHand-OFL.txt", root)),
   ]);
 
   const episodes = JSON.parse(catalog);
@@ -55,6 +58,8 @@ test("ships all episodes, transcripts, and the GitHub Pages workflow", async () 
   assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /path:\s*out/);
   assert.ok(socialCard.size > 100_000);
+  assert.ok(handwritingFont.size > 100_000);
+  assert.ok(fontLicense.size > 1_000);
 });
 
 test("uses redundant HTTPS Internet Archive audio sources", async () => {
@@ -99,6 +104,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
   assert.match(styles, /grid-template-columns: minmax\(72px, 100px\) minmax\(0, 1fr\)/);
   assert.match(layout, /Content-Security-Policy/);
+  assert.match(layout, /PatrickHand-Regular\.ttf/);
   assert.doesNotMatch(workflow, /AUDIO_BASE_URL/);
   assert.match(dependabot, /package-ecosystem: npm/);
   assert.match(dependabot, /package-ecosystem: github-actions/);

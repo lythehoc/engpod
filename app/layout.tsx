@@ -1,5 +1,14 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+
+const handwritingFont = localFont({
+  src: "./fonts/PatrickHand-Regular.ttf",
+  variable: "--font-handwriting",
+  weight: "400",
+  style: "normal",
+  display: "swap",
+});
 
 const assetBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const siteUrl = (
@@ -76,7 +85,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={handwritingFont.variable}
+      suppressHydrationWarning
+    >
       <head>
         <meta httpEquiv="Content-Security-Policy" content={contentSecurityPolicy} />
       </head>
