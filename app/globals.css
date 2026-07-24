@@ -68,6 +68,7 @@ button {
 button,
 select {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:focus-visible,
@@ -154,11 +155,6 @@ select:focus-visible {
   font-size: 12px;
   font-weight: 650;
   text-transform: capitalize;
-}
-
-.soft-button:hover {
-  color: var(--text);
-  border-color: color-mix(in srgb, var(--text) 25%, transparent);
 }
 
 .mobile-close {
@@ -369,10 +365,6 @@ select:focus-visible {
     transform 150ms ease;
 }
 
-.episode-row:hover {
-  background: var(--surface-2);
-}
-
 .episode-row:active {
   transform: scale(0.985);
 }
@@ -489,11 +481,6 @@ select:focus-visible {
   font-weight: 700;
 }
 
-.topbar-actions button:hover {
-  color: var(--accent-strong);
-  border-color: var(--accent);
-}
-
 .menu-button {
   display: none;
 }
@@ -553,7 +540,6 @@ select:focus-visible {
   cursor: pointer;
 }
 
-.eyebrow .level-shortcut:hover,
 .eyebrow .level-shortcut:focus-visible {
   border-color: var(--accent);
   color: var(--text);
@@ -835,12 +821,6 @@ select:focus-visible {
   font-weight: 750;
 }
 
-.transport button:hover,
-.player-options > button:hover {
-  background: var(--surface-2);
-  color: var(--text);
-}
-
 .transport button small {
   margin-left: -2px;
   font-size: 7px;
@@ -853,12 +833,6 @@ select:focus-visible {
   box-shadow: 0 10px 28px color-mix(in srgb, var(--accent) 35%, transparent);
   color: white;
   font-size: 20px;
-}
-
-.transport .play-button:hover {
-  background: var(--accent-strong);
-  color: white;
-  transform: translateY(-1px);
 }
 
 .player-options {
@@ -1014,6 +988,39 @@ select:focus-visible {
   background: var(--accent);
   color: white;
   font-weight: 750;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .soft-button:hover {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--text) 25%, transparent);
+  }
+
+  .episode-row:hover {
+    background: var(--surface-2);
+  }
+
+  .topbar-actions button:hover {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+  }
+
+  .eyebrow .level-shortcut:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .transport button:hover,
+  .player-options > button:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+
+  .transport .play-button:hover {
+    background: var(--accent-strong);
+    color: white;
+    transform: translateY(-1px);
+  }
 }
 
 @media (max-width: 980px) {
