@@ -899,15 +899,6 @@ export default function Home() {
 
             <div className="player-options">
               <button
-                className={loop ? "is-on" : ""}
-                onClick={() => setLoop((value) => !value)}
-                aria-pressed={loop}
-                title="Loop this episode"
-              >
-                <span aria-hidden="true">↻</span>
-                <span className="control-label">Loop</span>
-              </button>
-              <button
                 className={autoplayNext ? "is-on" : ""}
                 onClick={() => setAutoplayNext((value) => !value)}
                 aria-pressed={autoplayNext}
@@ -915,6 +906,15 @@ export default function Home() {
               >
                 <span aria-hidden="true">⏭</span>
                 <span className="control-label">Auto next</span>
+              </button>
+              <button
+                className={loop ? "is-on" : ""}
+                onClick={() => setLoop((value) => !value)}
+                aria-pressed={loop}
+                title="Loop this episode"
+              >
+                <span aria-hidden="true">↻</span>
+                <span className="control-label">Loop</span>
               </button>
               <button
                 className="speed-button"
