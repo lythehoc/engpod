@@ -66,6 +66,7 @@ const STORAGE = {
 };
 const SORT_MODES: SortMode[] = ["number-asc", "number-desc", "title"];
 const PLAYBACK_RATES = [0.75, 1, 1.25, 1.5, 2];
+const SLEEP_TIMER_OPTIONS = [0, 15, 30, 45, 60] as const;
 
 function formatTime(value: number) {
   if (!Number.isFinite(value) || value < 0) return "0:00";
@@ -204,6 +205,7 @@ export default function Home() {
   const [playbackRate, setPlaybackRate] = useState(1);
   const [loop, setLoop] = useState(false);
   const [autoplayNext, setAutoplayNext] = useState(true);
+  const [sleepTimerMinutes, setSleepTimerMinutes] = useState(0);
   const [completedIds, setCompletedIds] = useState<number[]>([]);
   const [helpOpen, setHelpOpen] = useState(false);
   const [audioSourceIndex, setAudioSourceIndex] = useState(0);
@@ -336,6 +338,15 @@ export default function Home() {
     );
   }, []);
 
+  const cycleSleepTimer = useCallback(() => {
+    setSleepTimerMinutes((current) => {
+      const index = SLEEP_TIMER_OPTIONS.indexOf(
+        current as (typeof SLEEP_TIMER_OPTIONS)[number],
+      );
+      return SLEEP_TIMER_OPTIONS[(index + 1) % SLEEP_TIMER_OPTIONS.length];
+    });
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     queueMicrotask(() => {
@@ -393,6 +404,17 @@ export default function Home() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem(STORAGE.theme, theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (sleepTimerMinutes === 0) return;
+    const timerId = window.setTimeout(() => {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+      setIsBuffering(false);
+      setSleepTimerMinutes(0);
+    }, sleepTimerMinutes * 60_000);
+    return () => window.clearTimeout(timerId);
+  }, [sleepTimerMinutes]);
 
   useEffect(() => {
     if (!settingsLoaded) return;
@@ -623,15 +645,14 @@ export default function Home() {
             </button>
           </div>
           <div className="brand-actions">
-            <button className="soft-button" onClick={() => setHelpOpen(true)}>
-              ? <span>Quick guide</span>
-            </button>
             <button
               className="soft-button"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+              onClick={() => {
+                setSidebarOpen(false);
+                setHelpOpen(true);
+              }}
             >
-              {theme === "dark" ? "☀" : "☾"} <span>{theme}</span>
+              ? <span>Quick guide</span>
             </button>
           </div>
         </div>
@@ -896,6 +917,26 @@ export default function Home() {
               >
                 <span aria-hidden="true">↻</span>
                 <span className="control-label">Loop</span>
+              </button>
+              <button
+                className={`sleep-button ${sleepTimerMinutes > 0 ? "is-on" : ""}`}
+                onClick={cycleSleepTimer}
+                aria-label={
+                  sleepTimerMinutes > 0
+                    ? `Sleep timer set for ${sleepTimerMinutes} minutes`
+                    : "Sleep timer off"
+                }
+                aria-pressed={sleepTimerMinutes > 0}
+                title={
+                  sleepTimerMinutes > 0
+                    ? `Pause after ${sleepTimerMinutes} minutes`
+                    : "Set a sleep timer"
+                }
+              >
+                <span className="sleep-icon" aria-hidden="true">☾</span>
+                <span className="control-label">
+                  {sleepTimerMinutes > 0 ? `${sleepTimerMinutes}m` : "Sleep"}
+                </span>
               </button>
               <button
                 className="speed-button"

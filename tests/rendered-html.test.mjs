@@ -19,7 +19,8 @@ test("renders the finished engpod library", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>engpod — small step every day<\/title>/i);
+  assert.match(html, /<title>engpod - small step every day<\/title>/i);
+  assert.doesNotMatch(html, /engpod — small step every day/i);
   assert.match(html, /small step every day/i);
   assert.doesNotMatch(html, /listen[. ]+read[. ]+repeat/i);
   assert.match(html, /engpod/);
@@ -101,6 +102,11 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.line \{[^}]*border: 1px solid var\(--line\);[^}]*border-radius: 14px;[^}]*background: color-mix\(in srgb, var\(--surface-2\) 28%, var\(--surface\)\);/);
   assert.match(styles, /\.speaker \{[^}]*border: 1px solid color-mix\(in srgb, var\(--accent\) 16%, var\(--line\)\);[^}]*background: color-mix\(in srgb, var\(--accent\) 7%, transparent\);[^}]*color: var\(--accent-strong\);/);
   assert.match(page, />Auto next</);
+  assert.match(page, /SLEEP_TIMER_OPTIONS = \[0, 15, 30, 45, 60\]/);
+  assert.match(page, /sleepTimerMinutes \* 60_000/);
+  assert.match(page, /: "Sleep"/);
+  assert.equal(page.match(/className="soft-button"/g)?.length, 1);
+  assert.match(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
   assert.doesNotMatch(page, /Surprise me|volume-control/);
   assert.equal(page.match(/small step every day/g)?.length, 1);
   assert.doesNotMatch(page, /Small steps, clear ears, confident English/);
@@ -124,8 +130,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
   assert.match(styles, /\.player-options > button\.is-on \{[^}]*var\(--accent\) 8%/);
   assert.doesNotMatch(styles, /\.player-options > button\.is-on \{[^}]*background: var\(--accent-soft\)/);
-  assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
-  assert.match(styles, /\.player-options > button \{[\s\S]*?max-width: 96px;[\s\S]*?justify-self: center;/);
+  assert.match(styles, /grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.player-options > button \{[\s\S]*?max-width: 82px;[\s\S]*?justify-self: center;/);
+  assert.match(styles, /\.guide-modal \{[\s\S]*?max-height: min\(78dvh, 620px\);[\s\S]*?border-radius: 24px 24px 0 0;/);
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
