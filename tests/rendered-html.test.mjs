@@ -88,6 +88,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /transcriptVisible/);
   assert.match(page, /sanitizeTranscriptHtml\(html\)/);
   assert.match(page, /querySelector\("h1"\)\?\.remove\(\)/);
+  assert.match(page, /speaker-tone-\$\{\(speakerTones\.size % 6\) \+ 1\}/);
+  assert.match(styles, /\.speaker-tone-1[\s\S]*?\.speaker-tone-6/);
   assert.match(page, />Auto next</);
   assert.doesNotMatch(page, /Surprise me|volume-control/);
   assert.equal(page.match(/small step every day/g)?.length, 1);
