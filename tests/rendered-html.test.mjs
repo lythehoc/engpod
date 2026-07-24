@@ -107,6 +107,12 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /SLEEP_TIMER_OPTIONS = \[0, 15, 30, 45, 60\]/);
   assert.match(page, /sleepTimerMinutes \* 60_000/);
   assert.match(page, /: "Sleep"/);
+  assert.match(page, /Mark episode as finished/);
+  assert.match(page, /updateCompleted\(currentId, true\)/);
+  assert.match(page, /orderedCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
+  assert.match(page, /unfinishedVisible[\s\S]*?unfinishedAnywhere/);
+  assert.match(page, /<span className="speed-value">\{playbackRate\}×<\/span>/);
+  assert.match(page, /<span className="control-label">Speed<\/span>/);
   assert.equal(page.match(/className="soft-button"/g)?.length, 1);
   assert.match(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
   assert.doesNotMatch(page, /className="modal-close"/);
@@ -141,6 +147,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
+  assert.match(styles, /\.eyebrow \.complete-toggle \{[^}]*width: 27px;[^}]*height: 27px;/);
+  assert.match(styles, /\.eyebrow \.complete-toggle\.is-finished \{[^}]*background: var\(--accent\);/);
+  assert.match(styles, /\.speed-value \{[^}]*var\(--font-geist-mono\)/);
   assert.match(styles, /grid-template-columns: max-content minmax\(0, 1fr\)/);
   assert.match(styles, /\.speaker \{[\s\S]*?min-width: 32px;[\s\S]*?max-width: min\(126px, 32vw\);/);
   assert.match(layout, /Content-Security-Policy/);
