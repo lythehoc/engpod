@@ -25,6 +25,8 @@ test("renders the finished engpod library", async () => {
   assert.match(html, /Search title, level, or number/);
   assert.match(html, />Random<\/span>/);
   assert.doesNotMatch(html, /Surprise me|aria-label="Volume"|volume-control/);
+  assert.doesNotMatch(html, /NOW PLAYING|ARCHIVE AUDIO/);
+  assert.match(html, /Open Elementary episodes/);
   assert.match(html, /https:\/\/demo-user\.github\.io\/engpod\/og\.png/);
   assert.doesNotMatch(html, /\/engpod\/engpod\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
@@ -83,8 +85,11 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(page, /Surprise me|volume-control/);
   assert.match(styles, /@media \(max-width: 660px\)/);
   assert.match(styles, /--player-height: 188px/);
-  assert.match(styles, /\.transport button \{[\s\S]*?width: 44px;[\s\S]*?height: 44px;/);
+  assert.match(styles, /\.transport button \{[\s\S]*?width: 50px;[\s\S]*?height: 50px;/);
+  assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 68px;[\s\S]*?height: 68px;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
+  assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
+  assert.match(styles, /grid-template-columns: minmax\(72px, 100px\) minmax\(0, 1fr\)/);
   assert.match(layout, /Content-Security-Policy/);
   assert.doesNotMatch(workflow, /AUDIO_BASE_URL/);
   assert.match(dependabot, /package-ecosystem: npm/);
