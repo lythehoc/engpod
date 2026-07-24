@@ -13,30 +13,16 @@ const githubPagesUrl =
       ? `https://${repositoryName}`
       : `https://${repositoryOwner}.github.io/${repositoryName}`
     : "http://localhost:3000";
-let audioBaseUrl = "";
-try {
-  const candidate = new URL(process.env.NEXT_PUBLIC_AUDIO_BASE_URL ?? "");
-  if (
-    candidate.protocol === "https:" &&
-    candidate.username === "" &&
-    candidate.password === ""
-  ) {
-    audioBaseUrl = candidate.href.replace(/\/+$/, "");
-  }
-} catch {
-  audioBaseUrl = "";
-}
 
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
+  basePath: publicBasePath,
+  assetPrefix: publicBasePath,
   images: { unoptimized: true },
   env: {
     NEXT_PUBLIC_BASE_PATH: publicBasePath,
     NEXT_PUBLIC_SITE_URL: githubPagesUrl,
-    NEXT_PUBLIC_AUDIO_BASE_URL: audioBaseUrl,
-    NEXT_PUBLIC_PREFER_LOCAL_AUDIO:
-      process.env.GITHUB_ACTIONS === "true" ? "false" : "true",
   },
 };
 

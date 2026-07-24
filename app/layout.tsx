@@ -2,23 +2,15 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const assetBase = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+).replace(/\/$/, "");
+const socialImageUrl = `${siteUrl}/og.png`;
 const archiveAudioOrigins = [
   "https://ia800408.us.archive.org",
   "https://ia600408.us.archive.org",
   "https://archive.org",
 ];
-let configuredAudioOrigin = "";
-try {
-  const configuredAudioBase = process.env.NEXT_PUBLIC_AUDIO_BASE_URL;
-  if (configuredAudioBase?.startsWith("https://")) {
-    configuredAudioOrigin = new URL(configuredAudioBase).origin;
-  }
-} catch {
-  configuredAudioOrigin = "";
-}
-const allowedAudioOrigins = Array.from(
-  new Set([configuredAudioOrigin, ...archiveAudioOrigins].filter(Boolean)),
-);
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -29,15 +21,13 @@ const contentSecurityPolicy = [
   "font-src 'self'",
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline'",
-  `media-src 'self' ${allowedAudioOrigins.join(" ")}`,
-  `connect-src 'self' ${allowedAudioOrigins.join(" ")}`,
+  `media-src 'self' ${archiveAudioOrigins.join(" ")}`,
+  `connect-src 'self' ${archiveAudioOrigins.join(" ")}`,
   "upgrade-insecure-requests",
 ].join("; ");
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  ),
+  metadataBase: new URL(siteUrl),
   title: "engpod — listen, read, repeat",
   description:
     "Learn English with 365 podcast conversations, searchable transcripts, level filters, shuffle, and automatic listening progress.",
@@ -54,7 +44,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${assetBase}/og.png`,
+        url: socialImageUrl,
         width: 1731,
         height: 908,
         alt: "engpod — listen, read, repeat",
@@ -66,7 +56,7 @@ export const metadata: Metadata = {
     title: "engpod — listen, read, repeat",
     description:
       "A focused English listening library with 365 episodes and transcripts.",
-    images: [`${assetBase}/og.png`],
+    images: [socialImageUrl],
   },
 };
 
