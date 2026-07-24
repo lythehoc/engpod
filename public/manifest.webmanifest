@@ -1,0 +1,17 @@
+{
+  "name": "engpod — small step every day",
+  "short_name": "engpod",
+  "description": "English podcast conversations with transcripts and saved listening progress.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d0e0f",
+  "theme_color": "#167d73",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "640x640",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

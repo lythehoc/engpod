@@ -1157,12 +1157,13 @@ select:focus-visible {
 
   .lesson-heading {
     align-items: flex-start;
-    margin-bottom: 14px;
-    padding: 16px 0 13px;
+    margin-bottom: 10px;
+    padding: 13px 0 10px;
   }
 
   .lesson-heading h2 {
-    font-size: clamp(32px, 11vw, 48px);
+    font-size: clamp(30px, 9.5vw, 43px);
+    line-height: 1;
   }
 
   .transcript-card {
