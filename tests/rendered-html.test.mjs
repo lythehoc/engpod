@@ -104,6 +104,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.progress-time:last-child \{[\s\S]*?text-align: right;/);
   assert.match(styles, /\.transport button \{[\s\S]*?width: 50px;[\s\S]*?height: 50px;/);
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 68px;[\s\S]*?height: 68px;/);
+  assert.match(styles, /\.transport \.play-button \{[\s\S]*?box-shadow: none;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?max-width: 96px;[\s\S]*?justify-self: center;/);
