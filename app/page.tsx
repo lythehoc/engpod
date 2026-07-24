@@ -106,19 +106,6 @@ function sanitizeTranscriptHtml(html: string) {
   // Every source file repeats the current episode title as its first H1.
   // The page already shows that title prominently, so remove only this copy.
   parsed.body.querySelector("h1")?.remove();
-  const speakerTones = new Map<string, string>();
-  for (const speaker of Array.from(
-    parsed.body.querySelectorAll<HTMLElement>(".speaker"),
-  )) {
-    const speakerName = speaker.textContent?.trim().toLocaleLowerCase() ?? "";
-    let toneClass = speakerTones.get(speakerName);
-    if (!toneClass) {
-      toneClass = `speaker-tone-${(speakerTones.size % 6) + 1}`;
-      speakerTones.set(speakerName, toneClass);
-    }
-    speaker.classList.add(toneClass);
-    speaker.closest(".line")?.classList.add(toneClass);
-  }
   const allowedTags = new Set([
     "H1",
     "H2",
@@ -136,12 +123,6 @@ function sanitizeTranscriptHtml(html: string) {
     "dialogue-block",
     "line",
     "speaker",
-    "speaker-tone-1",
-    "speaker-tone-2",
-    "speaker-tone-3",
-    "speaker-tone-4",
-    "speaker-tone-5",
-    "speaker-tone-6",
     "text",
     "vocab-block",
     "vocab-item",
