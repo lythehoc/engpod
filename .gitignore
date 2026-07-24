@@ -15,7 +15,6 @@
 
 # next.js
 /.next/
-/.vinext/
 /out/
 
 # misc
@@ -36,14 +35,9 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
-/dist/
-/.wrangler/
+*.tsbuildinfo
 /outputs/
 /work/
-
-# Optional self-hosted audio library (2.26 GiB)
-/public/audio/*.mp3
-/public/audio/*.part
 
 # Personal deployment notes and local handoff packages
 /LOCAL_GITHUB_GUIDE.md

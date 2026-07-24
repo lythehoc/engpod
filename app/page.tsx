@@ -32,7 +32,6 @@ type PersistedSettings = {
   transcriptVisible: boolean;
   sortMode: SortMode;
   playbackRate: number;
-  volume: number;
 };
 
 const episodes = episodesData as Episode[];
@@ -54,20 +53,10 @@ const ARCHIVE_AUDIO_FALLBACKS = [
   "https://ia600408.us.archive.org/10/items/englishpod_all",
   "https://archive.org/download/englishpod_all",
 ];
-const configuredAudioBase = process.env.NEXT_PUBLIC_AUDIO_BASE_URL ?? "";
-const PREFER_LOCAL_AUDIO =
-  process.env.NEXT_PUBLIC_PREFER_LOCAL_AUDIO !== "false";
-const EXTERNAL_AUDIO_BASES = Array.from(
-  new Set(
-    [
-      configuredAudioBase.startsWith("https://") ? configuredAudioBase : "",
-      DEFAULT_AUDIO_BASE,
-      ...ARCHIVE_AUDIO_FALLBACKS,
-    ]
-      .filter(Boolean)
-      .map((base) => base.replace(/\/+$/, "")),
-  ),
-);
+const EXTERNAL_AUDIO_BASES = [
+  DEFAULT_AUDIO_BASE,
+  ...ARCHIVE_AUDIO_FALLBACKS,
+];
 const STORAGE = {
   episode: "englishpod:last-episode",
   positions: "englishpod:positions",
@@ -114,6 +103,9 @@ function readSettings(): Partial<PersistedSettings> {
 
 function sanitizeTranscriptHtml(html: string) {
   const parsed = new DOMParser().parseFromString(html, "text/html");
+  // Every source file repeats the current episode title as its first H1.
+  // The page already shows that title prominently, so remove only this copy.
+  parsed.body.querySelector("h1")?.remove();
   const allowedTags = new Set([
     "H1",
     "H2",
@@ -209,26 +201,20 @@ export default function Home() {
   const [isBuffering, setIsBuffering] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.9);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [loop, setLoop] = useState(false);
   const [autoplayNext, setAutoplayNext] = useState(true);
   const [completedIds, setCompletedIds] = useState<number[]>([]);
   const [resumeNotice, setResumeNotice] = useState("");
   const [helpOpen, setHelpOpen] = useState(false);
-  const [audioSourceIndex, setAudioSourceIndex] = useState(
-    PREFER_LOCAL_AUDIO ? -1 : 0,
-  );
+  const [audioSourceIndex, setAudioSourceIndex] = useState(0);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   const currentEpisode =
     episodes.find((episode) => episode.id === currentId) ?? episodes[0];
   const currentIndex = episodes.findIndex((episode) => episode.id === currentId);
   const audioFileName = `${currentEpisode.transcript_id}pb.mp3`;
-  const audioUrl =
-    audioSourceIndex === -1
-      ? `${BASE_PATH}/audio/${audioFileName}`
-      : `${EXTERNAL_AUDIO_BASES[audioSourceIndex]}/${audioFileName}`;
+  const audioUrl = `${EXTERNAL_AUDIO_BASES[audioSourceIndex]}/${audioFileName}`;
 
   const levels = useMemo(
     () =>
@@ -288,7 +274,7 @@ export default function Home() {
         audioRef.current.pause();
       }
       pendingAutoplayRef.current = autoplay;
-      setAudioSourceIndex(PREFER_LOCAL_AUDIO ? -1 : 0);
+      setAudioSourceIndex(0);
       setCurrentId(episode.id);
       setCurrentTime(0);
       setDuration(0);
@@ -409,14 +395,6 @@ export default function Home() {
       if (PLAYBACK_RATES.includes(savedSettings.playbackRate ?? 0)) {
         setPlaybackRate(savedSettings.playbackRate ?? 1);
       }
-      if (
-        typeof savedSettings.volume === "number" &&
-        Number.isFinite(savedSettings.volume) &&
-        savedSettings.volume >= 0 &&
-        savedSettings.volume <= 1
-      ) {
-        setVolume(savedSettings.volume);
-      }
       setSettingsLoaded(true);
     });
     return () => {
@@ -439,7 +417,6 @@ export default function Home() {
       transcriptVisible,
       sortMode,
       playbackRate,
-      volume,
     };
     localStorage.setItem(STORAGE.settings, JSON.stringify(settings));
   }, [
@@ -451,7 +428,6 @@ export default function Home() {
     settingsLoaded,
     sortMode,
     transcriptVisible,
-    volume,
   ]);
 
   useEffect(() => {
@@ -552,7 +528,6 @@ export default function Home() {
     const audio = audioRef.current;
     if (!audio) return;
     setDuration(audio.duration || 0);
-    audio.volume = volume;
     audio.playbackRate = playbackRate;
     const savedPosition = readNumberMap(STORAGE.positions)[String(currentId)] ?? 0;
     if (savedPosition > 0 && savedPosition < audio.duration - 5) {
@@ -601,12 +576,6 @@ export default function Home() {
     const nextTime = Number(event.target.value);
     audio.currentTime = nextTime;
     setCurrentTime(nextTime);
-  };
-
-  const handleVolumeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const nextVolume = Number(event.target.value);
-    setVolume(nextVolume);
-    if (audioRef.current) audioRef.current.volume = nextVolume;
   };
 
   const preventSliderKeys = (event: ReactKeyboardEvent<HTMLInputElement>) => {
@@ -793,7 +762,8 @@ export default function Home() {
           </p>
           <div className="topbar-actions">
             <button onClick={shuffleEpisode} title="Play a random episode">
-              ⤨ <span>Shuffle</span>
+              <span aria-hidden="true">🎲</span>{" "}
+              <span className="topbar-label">Random</span>
             </button>
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -817,14 +787,6 @@ export default function Home() {
                   <p className="resume-note">{resumeNotice}</p>
                 )}
               </div>
-              <button
-                className="shuffle-card-button"
-                onClick={shuffleEpisode}
-                title="Choose a random episode from the current filter"
-              >
-                <span aria-hidden="true">⤨</span>
-                Surprise me
-              </button>
             </div>
 
             <section className="transcript-card">
@@ -897,14 +859,19 @@ export default function Home() {
               <div>
                 <span>
                   NOW PLAYING · {currentEpisode.level} ·{" "}
-                  {audioSourceIndex === -1 ? "LOCAL AUDIO" : "STREAMING"}
+                  ARCHIVE AUDIO
                 </span>
                 <strong>{currentEpisode.title}</strong>
               </div>
             </div>
 
             <div className="transport">
-              <button onClick={() => seek(-10)} aria-label="Back 10 seconds">
+              <button
+                className="skip-button"
+                onClick={() => seek(-10)}
+                aria-label="Back 10 seconds"
+                title="Back 10 seconds"
+              >
                 ↶<small>10</small>
               </button>
               <button onClick={previousEpisode} aria-label="Previous episode">
@@ -920,7 +887,12 @@ export default function Home() {
               <button onClick={() => nextEpisode()} aria-label="Next episode">
                 ▶|
               </button>
-              <button onClick={() => seek(10)} aria-label="Forward 10 seconds">
+              <button
+                className="skip-button"
+                onClick={() => seek(10)}
+                aria-label="Forward 10 seconds"
+                title="Forward 10 seconds"
+              >
                 ↷<small>10</small>
               </button>
             </div>
@@ -932,7 +904,8 @@ export default function Home() {
                 aria-pressed={loop}
                 title="Loop this episode"
               >
-                ↻
+                <span aria-hidden="true">↻</span>
+                <span className="control-label">Loop</span>
               </button>
               <button
                 className={autoplayNext ? "is-on" : ""}
@@ -940,7 +913,8 @@ export default function Home() {
                 aria-pressed={autoplayNext}
                 title="Autoplay next episode"
               >
-                →◎
+                <span aria-hidden="true">⏭</span>
+                <span className="control-label">Auto next</span>
               </button>
               <button
                 className="speed-button"
@@ -954,19 +928,6 @@ export default function Home() {
               >
                 {playbackRate}×
               </button>
-              <label className="volume-control">
-                <span aria-hidden="true">{volume === 0 ? "×" : "◖"}</span>
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  onKeyDown={preventSliderKeys}
-                  aria-label="Volume"
-                />
-              </label>
             </div>
           </div>
 
@@ -1015,7 +976,7 @@ export default function Home() {
             </ol>
             <p>
               Your episode, position, filters, grouping, transcript visibility,
-              loop, autoplay, speed, and volume are saved on this device.
+              loop, autoplay, and speed are saved on this device.
             </p>
             <p className="project-disclaimer">
               Independent educational project. Not affiliated with or endorsed
