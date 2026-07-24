@@ -632,60 +632,68 @@ select:focus-visible {
 
 .dialogue-block {
   display: grid;
-  gap: 6px;
+  gap: 10px;
 }
 
 .line {
   display: grid;
   grid-template-columns: minmax(76px, 126px) minmax(0, 1fr);
   gap: 14px;
-  padding: 11px 0;
+  padding: 13px;
+  border: 1px solid
+    color-mix(in srgb, var(--speaker-color, var(--line)) 22%, var(--line));
+  border-radius: 14px;
+  background: color-mix(
+    in srgb,
+    var(--speaker-background, var(--surface-2)) 42%,
+    var(--surface)
+  );
 }
 
 .speaker {
   width: 100%;
   min-height: 34px;
   height: fit-content;
-  padding: 8px;
+  padding: 6px 8px;
   display: grid;
   place-items: center;
-  border-radius: 10px;
-  background: var(--blue-soft);
-  color: var(--blue);
+  border-radius: 0;
+  background: transparent;
+  color: var(--speaker-color, var(--blue));
   font: 750 12px var(--font-geist-mono), monospace;
   line-height: 1.15;
   overflow-wrap: anywhere;
   text-align: center;
 }
 
-.speaker-tone-1 {
-  background: var(--speaker-1-soft);
-  color: var(--speaker-1);
+.line.speaker-tone-1 {
+  --speaker-color: var(--speaker-1);
+  --speaker-background: var(--speaker-1-soft);
 }
 
-.speaker-tone-2 {
-  background: var(--speaker-2-soft);
-  color: var(--speaker-2);
+.line.speaker-tone-2 {
+  --speaker-color: var(--speaker-2);
+  --speaker-background: var(--speaker-2-soft);
 }
 
-.speaker-tone-3 {
-  background: var(--speaker-3-soft);
-  color: var(--speaker-3);
+.line.speaker-tone-3 {
+  --speaker-color: var(--speaker-3);
+  --speaker-background: var(--speaker-3-soft);
 }
 
-.speaker-tone-4 {
-  background: var(--speaker-4-soft);
-  color: var(--speaker-4);
+.line.speaker-tone-4 {
+  --speaker-color: var(--speaker-4);
+  --speaker-background: var(--speaker-4-soft);
 }
 
-.speaker-tone-5 {
-  background: var(--speaker-5-soft);
-  color: var(--speaker-5);
+.line.speaker-tone-5 {
+  --speaker-color: var(--speaker-5);
+  --speaker-background: var(--speaker-5-soft);
 }
 
-.speaker-tone-6 {
-  background: var(--speaker-6-soft);
-  color: var(--speaker-6);
+.line.speaker-tone-6 {
+  --speaker-color: var(--speaker-6);
+  --speaker-background: var(--speaker-6-soft);
 }
 
 .text {
@@ -1173,7 +1181,7 @@ select:focus-visible {
   .line {
     grid-template-columns: minmax(72px, 100px) minmax(0, 1fr);
     gap: 10px;
-    padding: 6px 0;
+    padding: 10px;
   }
 
   .speaker {
