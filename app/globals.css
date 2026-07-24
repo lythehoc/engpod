@@ -414,9 +414,9 @@ select:focus-visible {
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: transparent;
+  background: var(--surface-2);
   box-shadow: none;
-  color: var(--subtle);
+  color: var(--muted);
   font-size: 15px;
 }
 
@@ -566,11 +566,11 @@ select:focus-visible {
   flex: 0 0 44px;
   display: grid;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+  border: 1px solid var(--line);
   border-radius: 13px;
-  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  background: var(--surface-2);
   box-shadow: none;
-  color: var(--accent-strong);
+  color: var(--muted);
   font-size: 18px;
 }
 

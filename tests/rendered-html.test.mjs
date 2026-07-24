@@ -119,6 +119,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(page, /now-label|>NOW</);
   assert.match(page, /updateCompleted\(currentId, true\)/);
   assert.match(page, /orderedCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
+  assert.match(page, /previousCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
   assert.match(page, /unfinishedVisible[\s\S]*?unfinishedAnywhere/);
   assert.match(page, /<span className="speed-value">\{playbackRate\}×<\/span>/);
   assert.match(page, /<span className="control-label">Speed<\/span>/);
@@ -157,8 +158,12 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
   assert.match(styles, /\.heading-complete \{[^}]*width: 44px;[^}]*height: 44px;/);
+  assert.match(styles, /\.heading-complete \{[^}]*border: 1px solid var\(--line\);[^}]*background: var\(--surface-2\);[^}]*color: var\(--muted\);/);
+  assert.doesNotMatch(styles, /\.heading-complete \{[^}]*var\(--accent/);
   assert.match(styles, /\.heading-complete\.is-finished \{[^}]*background: var\(--accent\);/);
   assert.match(styles, /\.episode-complete \{[^}]*width: 40px;[^}]*height: 40px;/);
+  assert.match(styles, /\.episode-complete \{[^}]*background: var\(--surface-2\);[^}]*color: var\(--muted\);/);
+  assert.doesNotMatch(styles, /\.episode-complete \{[^}]*var\(--accent/);
   assert.match(styles, /\.episode-complete\.is-finished \{[^}]*background: var\(--accent\);/);
   assert.doesNotMatch(styles, /\.now-label|\.complete-toggle/);
   assert.match(styles, /\.speed-value \{[^}]*var\(--font-geist-mono\)/);

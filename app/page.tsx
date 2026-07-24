@@ -320,10 +320,19 @@ export default function Home() {
   );
 
   const previousEpisode = useCallback(() => {
+    const previousCandidates = Array.from(
+      { length: episodes.length },
+      (_, offset) =>
+        episodes[
+          (currentIndex - offset - 1 + episodes.length) % episodes.length
+        ],
+    );
     const previous =
-      episodes[(currentIndex - 1 + episodes.length) % episodes.length];
+      previousCandidates.find(
+        (episode) => !completedIds.includes(episode.id),
+      ) ?? previousCandidates[0];
     selectEpisode(previous);
-  }, [currentIndex, selectEpisode]);
+  }, [completedIds, currentIndex, selectEpisode]);
 
   const shuffleEpisode = useCallback(() => {
     const pool = visibleEpisodes.length > 1 ? visibleEpisodes : episodes;
