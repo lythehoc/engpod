@@ -127,18 +127,6 @@ select:focus-visible {
   color: var(--accent);
 }
 
-.brand-row p {
-  margin: 7px 0 0;
-  color: var(--accent-strong);
-  font-family: var(--font-handwriting), "Comic Sans MS", cursive;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0.025em;
-  line-height: 1.25;
-  text-transform: none;
-}
-
 .brand-actions {
   display: flex;
   gap: 8px;
@@ -462,9 +450,12 @@ select:focus-visible {
 
 .topbar p {
   margin: 0;
-  color: var(--muted);
-  font: 600 11px var(--font-geist-mono), monospace;
+  color: var(--accent-strong);
+  font-family: var(--font-handwriting), "Comic Sans MS", cursive;
+  font-size: 17px;
+  font-weight: 400;
   letter-spacing: 0.025em;
+  line-height: 1;
 }
 
 .topbar-actions {
@@ -1089,12 +1080,14 @@ select:focus-visible {
     grid-template-rows: 54px minmax(0, 1fr) auto;
   }
 
-  .topbar p {
-    display: none;
+  .topbar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
   }
 
-  .topbar {
-    grid-template-columns: auto 1fr;
+  .topbar p {
+    display: block;
+    font-size: clamp(13px, 4vw, 16px);
   }
 
   .topbar-actions {
