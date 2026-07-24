@@ -97,7 +97,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.equal(page.match(/small step every day/g)?.length, 1);
   assert.doesNotMatch(page, /Small steps, clear ears, confident English/);
   assert.doesNotMatch(page, /resumeNotice|setResumeNotice|Welcome back|Saved on this device/);
+  assert.doesNotMatch(page, /Your episode, position, filters|Not affiliated with or endorsed/);
   assert.doesNotMatch(styles, /\.brand-row p/);
+  assert.doesNotMatch(styles, /project-disclaimer/);
   assert.doesNotMatch(styles, /resume-note|radial-gradient/);
   assert.match(styles, /\.app-shell \{[\s\S]*?background: var\(--bg\);/);
   assert.match(styles, /@media \(max-width: 660px\)/);

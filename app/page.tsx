@@ -970,14 +970,6 @@ export default function Home() {
                 <span>Copy the speakers’ rhythm and stress.</span>
               </li>
             </ol>
-            <p>
-              Your episode, position, filters, grouping, transcript visibility,
-              loop, autoplay, and speed are saved on this device.
-            </p>
-            <p className="project-disclaimer">
-              Independent educational project. Not affiliated with or endorsed
-              by EnglishPod.
-            </p>
             <button className="primary-button" onClick={() => setHelpOpen(false)}>
               Start listening
             </button>
