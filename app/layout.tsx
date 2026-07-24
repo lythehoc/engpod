@@ -37,7 +37,7 @@ const contentSecurityPolicy = [
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "engpod — small step every day",
+  title: "engpod - small step every day",
   description:
     "Learn English with 365 podcast conversations, searchable transcripts, level filters, shuffle, and automatic listening progress.",
   referrer: "strict-origin-when-cross-origin",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     apple: `${assetBase}/logo.jpg`,
   },
   openGraph: {
-    title: "engpod — small step every day",
+    title: "engpod - small step every day",
     description:
       "A focused English listening library with 365 episodes, transcripts, level filters, shuffle, and automatic resume.",
     type: "website",
@@ -57,13 +57,13 @@ export const metadata: Metadata = {
         url: socialImageUrl,
         width: 1731,
         height: 908,
-        alt: "engpod — small step every day",
+        alt: "engpod - small step every day",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "engpod — small step every day",
+    title: "engpod - small step every day",
     description:
       "A focused English listening library with 365 episodes and transcripts.",
     images: [socialImageUrl],
