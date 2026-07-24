@@ -84,8 +84,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, />Auto next</);
   assert.doesNotMatch(page, /Surprise me|volume-control/);
   assert.match(styles, /@media \(max-width: 660px\)/);
-  assert.match(styles, /--player-height: 174px/);
-  assert.match(styles, /\.player-time \{[\s\S]*?position: absolute;[\s\S]*?top: 10px;/);
+  assert.match(styles, /--player-height: 160px/);
+  assert.match(styles, /grid-template-columns: 34px minmax\(0, 1fr\) 34px/);
+  assert.match(styles, /\.progress-time:last-child \{[\s\S]*?text-align: right;/);
   assert.match(styles, /\.transport button \{[\s\S]*?width: 50px;[\s\S]*?height: 50px;/);
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 68px;[\s\S]*?height: 68px;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);

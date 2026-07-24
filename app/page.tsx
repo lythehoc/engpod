@@ -844,6 +844,7 @@ export default function Home() {
 
         <section className="player" aria-label="Audio player">
           <div className="progress-wrap">
+            <span className="progress-time">{formatTime(currentTime)}</span>
             <input
               type="range"
               min={0}
@@ -860,10 +861,7 @@ export default function Home() {
                 } as React.CSSProperties
               }
             />
-            <div className="player-time" aria-live="off">
-              <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
-            </div>
+            <span className="progress-time">{formatTime(duration)}</span>
           </div>
 
           <div className="player-main">
