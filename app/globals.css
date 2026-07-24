@@ -16,7 +16,7 @@
   --accent-soft: #f9d9cc;
   --blue: #2856d8;
   --blue-soft: #dbe3ff;
-  --player-height: 126px;
+  --player-height: 132px;
   --shadow: 0 24px 70px rgba(37, 31, 22, 0.13);
 }
 
@@ -736,8 +736,12 @@ select:focus-visible {
 }
 
 .progress-wrap {
-  position: relative;
-  transform: translateY(-5px);
+  min-height: 22px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(-2px);
 }
 
 .progress-wrap input {
@@ -747,6 +751,16 @@ select:focus-visible {
   appearance: none;
   background: transparent;
   cursor: pointer;
+}
+
+.progress-time {
+  color: var(--subtle);
+  font: 600 9px var(--font-geist-mono), monospace;
+  white-space: nowrap;
+}
+
+.progress-time:last-child {
+  text-align: right;
 }
 
 .progress-wrap input::-webkit-slider-runnable-track {
@@ -798,7 +812,7 @@ select:focus-visible {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 24px;
-  padding-top: 10px;
+  padding-top: 2px;
 }
 
 .transport {
@@ -880,18 +894,6 @@ select:focus-visible {
   width: 45px;
   border-radius: 10px;
   font-size: 11px;
-}
-
-.player-time {
-  position: absolute;
-  top: 10px;
-  right: 0;
-  left: 0;
-  display: flex;
-  justify-content: space-between;
-  pointer-events: none;
-  color: var(--subtle);
-  font: 600 9px var(--font-geist-mono), monospace;
 }
 
 .mobile-scrim,
@@ -1016,7 +1018,7 @@ select:focus-visible {
 
 @media (max-width: 980px) {
   :root {
-    --player-height: 126px;
+    --player-height: 132px;
   }
 
   .app-shell {
@@ -1070,7 +1072,7 @@ select:focus-visible {
 
 @media (max-width: 660px) {
   :root {
-    --player-height: 174px;
+    --player-height: 160px;
   }
 
   .content-panel {
@@ -1150,10 +1152,10 @@ select:focus-visible {
   }
 
   .player-main {
-    min-height: 148px;
+    min-height: 130px;
     grid-template-columns: 1fr;
-    grid-template-rows: 76px 54px;
-    gap: 7px;
+    grid-template-rows: 70px 50px;
+    gap: 2px;
   }
 
   .transport {
