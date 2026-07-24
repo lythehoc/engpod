@@ -90,6 +90,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /querySelector\("h1"\)\?\.remove\(\)/);
   assert.match(page, />Auto next</);
   assert.doesNotMatch(page, /Surprise me|volume-control/);
+  assert.equal(page.match(/small step every day/g)?.length, 1);
+  assert.doesNotMatch(page, /Small steps, clear ears, confident English/);
+  assert.doesNotMatch(styles, /\.brand-row p/);
   assert.match(styles, /@media \(max-width: 660px\)/);
   assert.match(styles, /--player-height: 160px/);
   assert.match(styles, /grid-template-columns: 34px minmax\(0, 1fr\) 34px/);

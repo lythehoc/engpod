@@ -626,7 +626,6 @@ export default function Home() {
             />
             <div>
               <h1>eng<span>pod</span></h1>
-              <p>small step every day</p>
             </div>
             <button
               className="mobile-close"
@@ -757,9 +756,7 @@ export default function Home() {
           >
             ☰
           </button>
-          <p>
-            Small steps, clear ears, confident English.
-          </p>
+          <p>small step every day</p>
           <div className="topbar-actions">
             <button onClick={shuffleEpisode} title="Play a random episode">
               <span aria-hidden="true">🎲</span>{" "}
