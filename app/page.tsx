@@ -205,7 +205,6 @@ export default function Home() {
   const [loop, setLoop] = useState(false);
   const [autoplayNext, setAutoplayNext] = useState(true);
   const [completedIds, setCompletedIds] = useState<number[]>([]);
-  const [resumeNotice, setResumeNotice] = useState("");
   const [helpOpen, setHelpOpen] = useState(false);
   const [audioSourceIndex, setAudioSourceIndex] = useState(0);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
@@ -281,13 +280,6 @@ export default function Home() {
       setIsPlaying(false);
       setTranscriptLoading(true);
       setTranscriptError(false);
-      const savedPosition =
-        readNumberMap(STORAGE.positions)[String(episode.id)] ?? 0;
-      setResumeNotice(
-        savedPosition > 5
-          ? `Saved on this device at ${formatTime(savedPosition)}`
-          : "",
-      );
       setSidebarOpen(false);
       localStorage.setItem(STORAGE.episode, String(episode.id));
     },
@@ -351,14 +343,9 @@ export default function Home() {
       const savedId = Number(localStorage.getItem(STORAGE.episode));
       const savedTheme = localStorage.getItem(STORAGE.theme) as Theme | null;
       const savedCompleted = readNumberMap(STORAGE.completed);
-      const savedPositions = readNumberMap(STORAGE.positions);
       const savedSettings = readSettings();
       if (episodes.some((episode) => episode.id === savedId)) {
         setCurrentId(savedId);
-        const position = savedPositions[String(savedId)] ?? 0;
-        if (position > 5) {
-          setResumeNotice(`Welcome back — ready at ${formatTime(position)}`);
-        }
       }
       setCompletedIds(
         Object.entries(savedCompleted)
@@ -790,9 +777,6 @@ export default function Home() {
                   <span>Episode {currentEpisode.id} of {episodes.length}</span>
                 </div>
                 <h2>{currentEpisode.title}</h2>
-                {resumeNotice && (
-                  <p className="resume-note">{resumeNotice}</p>
-                )}
               </div>
             </div>
 
