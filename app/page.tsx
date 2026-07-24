@@ -290,10 +290,17 @@ export default function Home() {
 
   const nextEpisode = useCallback(
     (autoplay = true) => {
-      const next = episodes[(currentIndex + 1) % episodes.length];
+      const orderedCandidates = Array.from(
+        { length: episodes.length },
+        (_, offset) => episodes[(currentIndex + offset + 1) % episodes.length],
+      );
+      const next =
+        orderedCandidates.find(
+          (episode) => !completedIds.includes(episode.id),
+        ) ?? orderedCandidates[0];
       selectEpisode(next, autoplay);
     },
-    [currentIndex, selectEpisode],
+    [completedIds, currentIndex, selectEpisode],
   );
 
   const previousEpisode = useCallback(() => {
@@ -304,11 +311,44 @@ export default function Home() {
 
   const shuffleEpisode = useCallback(() => {
     const pool = visibleEpisodes.length > 1 ? visibleEpisodes : episodes;
-    const candidates = pool.filter((episode) => episode.id !== currentId);
+    const unfinishedVisible = pool.filter(
+      (episode) =>
+        episode.id !== currentId && !completedIds.includes(episode.id),
+    );
+    const unfinishedAnywhere = episodes.filter(
+      (episode) =>
+        episode.id !== currentId && !completedIds.includes(episode.id),
+    );
+    const candidates =
+      unfinishedVisible.length > 0
+        ? unfinishedVisible
+        : unfinishedAnywhere.length > 0
+          ? unfinishedAnywhere
+          : pool.filter((episode) => episode.id !== currentId);
     const next =
       candidates[Math.floor(Math.random() * candidates.length)] ?? pool[0];
     selectEpisode(next);
-  }, [currentId, selectEpisode, visibleEpisodes]);
+  }, [completedIds, currentId, selectEpisode, visibleEpisodes]);
+
+  const updateCompleted = useCallback(
+    (episodeId: number, completed: boolean) => {
+      const savedCompleted = readNumberMap(STORAGE.completed);
+      if (completed) {
+        savedCompleted[String(episodeId)] = 1;
+      } else {
+        delete savedCompleted[String(episodeId)];
+      }
+      localStorage.setItem(STORAGE.completed, JSON.stringify(savedCompleted));
+      setCompletedIds((ids) =>
+        completed
+          ? ids.includes(episodeId)
+            ? ids
+            : [...ids, episodeId]
+          : ids.filter((id) => id !== episodeId),
+      );
+    },
+    [],
+  );
 
   const togglePlayback = useCallback(async () => {
     const audio = audioRef.current;
@@ -564,12 +604,7 @@ export default function Home() {
   };
 
   const onEnded = () => {
-    const completed = readNumberMap(STORAGE.completed);
-    completed[String(currentId)] = 1;
-    localStorage.setItem(STORAGE.completed, JSON.stringify(completed));
-    setCompletedIds((ids) =>
-      ids.includes(currentId) ? ids : [...ids, currentId],
-    );
+    updateCompleted(currentId, true);
     setIsPlaying(false);
     if (loop && audioRef.current) {
       audioRef.current.currentTime = 0;
@@ -796,6 +831,30 @@ export default function Home() {
                     {currentEpisode.level}
                   </button>
                   <span>Episode {currentEpisode.id} of {episodes.length}</span>
+                  <button
+                    className={`complete-toggle ${
+                      completedIds.includes(currentId) ? "is-finished" : ""
+                    }`}
+                    onClick={() =>
+                      updateCompleted(
+                        currentId,
+                        !completedIds.includes(currentId),
+                      )
+                    }
+                    aria-label={
+                      completedIds.includes(currentId)
+                        ? "Mark episode as unfinished"
+                        : "Mark episode as finished"
+                    }
+                    aria-pressed={completedIds.includes(currentId)}
+                    title={
+                      completedIds.includes(currentId)
+                        ? "Marked as finished"
+                        : "Mark as finished"
+                    }
+                  >
+                    <span aria-hidden="true">✓</span>
+                  </button>
                 </div>
                 <h2>{currentEpisode.title}</h2>
               </div>
@@ -939,7 +998,9 @@ export default function Home() {
                 </span>
               </button>
               <button
-                className="speed-button"
+                className={`speed-button ${
+                  playbackRate !== 1 ? "is-on" : ""
+                }`}
                 onClick={() => {
                   const index = PLAYBACK_RATES.indexOf(playbackRate);
                   setPlaybackRate(
@@ -948,7 +1009,8 @@ export default function Home() {
                 }}
                 title="Change playback speed"
               >
-                {playbackRate}×
+                <span className="speed-value">{playbackRate}×</span>
+                <span className="control-label">Speed</span>
               </button>
             </div>
           </div>

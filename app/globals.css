@@ -532,6 +532,24 @@ select:focus-visible {
   color: var(--text);
 }
 
+.eyebrow .complete-toggle {
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  color: var(--subtle);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.eyebrow .complete-toggle.is-finished {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
 .lesson-heading h2 {
   max-width: 750px;
   margin: 0;
@@ -858,9 +876,12 @@ select:focus-visible {
 }
 
 .player-options .speed-button {
-  width: 45px;
   border-radius: 999px;
-  font-size: 11px;
+}
+
+.speed-value {
+  font: 750 10px var(--font-geist-mono), monospace;
+  letter-spacing: -0.03em;
 }
 
 .sleep-icon {
