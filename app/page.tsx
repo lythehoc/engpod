@@ -117,6 +117,7 @@ function sanitizeTranscriptHtml(html: string) {
       speakerTones.set(speakerName, toneClass);
     }
     speaker.classList.add(toneClass);
+    speaker.closest(".line")?.classList.add(toneClass);
   }
   const allowedTags = new Set([
     "H1",
