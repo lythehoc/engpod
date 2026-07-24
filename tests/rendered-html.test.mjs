@@ -19,7 +19,9 @@ test("renders the finished engpod library", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>engpod — listen, read, repeat<\/title>/i);
+  assert.match(html, /<title>engpod — small step every day<\/title>/i);
+  assert.match(html, /small step every day/i);
+  assert.doesNotMatch(html, /listen[. ]+read[. ]+repeat/i);
   assert.match(html, /engpod/);
   assert.match(html, /Cut In Line/);
   assert.match(html, /Search title, level, or number/);
@@ -90,8 +92,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.transport button \{[\s\S]*?width: 50px;[\s\S]*?height: 50px;/);
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 68px;[\s\S]*?height: 68px;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
-  assert.match(styles, /\.player-options \{[\s\S]*?grid-template-columns: 1fr auto 1fr;/);
-  assert.match(styles, /\.player-options > button:nth-child\(2\) \{[\s\S]*?justify-self: center;/);
+  assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.player-options > button \{[\s\S]*?max-width: 96px;[\s\S]*?justify-self: center;/);
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);

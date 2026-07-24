@@ -129,11 +129,15 @@ select:focus-visible {
 
 .brand-row p {
   margin: 7px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-  font-family: var(--font-geist-mono), monospace;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  color: var(--accent-strong);
+  font-family: "Segoe Print", "Bradley Hand", "Noteworthy",
+    "Comic Sans MS", cursive;
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  line-height: 1.25;
+  text-transform: none;
 }
 
 .brand-actions {
@@ -1188,26 +1192,19 @@ select:focus-visible {
     grid-row: 2;
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: center;
-    gap: 0;
-  }
-
-  .player-options > button:first-child {
-    justify-self: end;
-  }
-
-  .player-options > button:nth-child(2) {
-    justify-self: center;
-  }
-
-  .player-options > button:last-child {
-    justify-self: start;
+    gap: 12px;
   }
 
   .player-options > button {
+    width: 100%;
+    max-width: 96px;
+    min-width: 0;
     min-height: 44px;
-    padding: 0 12px;
+    justify-self: center;
+    padding: 0 6px;
+    border-radius: 12px;
   }
 
   .control-label {
