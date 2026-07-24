@@ -779,7 +779,17 @@ export default function Home() {
             <div className="lesson-heading">
               <div>
                 <div className="eyebrow">
-                  <span>{currentEpisode.level}</span>
+                  <button
+                    className="level-shortcut"
+                    onClick={() => {
+                      setSelectedLevel(currentEpisode.level);
+                      setSidebarOpen(true);
+                    }}
+                    aria-label={`Open ${currentEpisode.level} episodes`}
+                    title={`Show all ${currentEpisode.level} episodes`}
+                  >
+                    {currentEpisode.level}
+                  </button>
                   <span>Episode {currentEpisode.id} of {episodes.length}</span>
                 </div>
                 <h2>{currentEpisode.title}</h2>
@@ -853,18 +863,6 @@ export default function Home() {
           </div>
 
           <div className="player-main">
-            <div className="now-playing">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`${BASE_PATH}/logo.jpg`} alt="" />
-              <div>
-                <span>
-                  NOW PLAYING · {currentEpisode.level} ·{" "}
-                  ARCHIVE AUDIO
-                </span>
-                <strong>{currentEpisode.title}</strong>
-              </div>
-            </div>
-
             <div className="transport">
               <button
                 className="skip-button"
