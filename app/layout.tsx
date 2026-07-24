@@ -41,9 +41,10 @@ export const metadata: Metadata = {
   description:
     "Learn English with 365 podcast conversations, searchable transcripts, level filters, shuffle, and automatic listening progress.",
   referrer: "strict-origin-when-cross-origin",
+  manifest: `${assetBase}/manifest.webmanifest`,
   icons: {
-    icon: `${assetBase}/logo.jpg`,
-    shortcut: `${assetBase}/logo.jpg`,
+    icon: `${assetBase}/favicon.svg`,
+    shortcut: `${assetBase}/favicon.svg`,
     apple: `${assetBase}/logo.jpg`,
   },
   openGraph: {

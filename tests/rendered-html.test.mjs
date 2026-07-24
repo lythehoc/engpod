@@ -30,18 +30,22 @@ test("renders the finished engpod library", async () => {
   assert.doesNotMatch(html, /NOW PLAYING|ARCHIVE AUDIO/);
   assert.match(html, /Open Elementary episodes/);
   assert.match(html, /https:\/\/demo-user\.github\.io\/engpod\/og\.png/);
+  assert.match(html, /\/engpod\/favicon\.svg/);
+  assert.match(html, /\/engpod\/manifest\.webmanifest/);
   assert.doesNotMatch(html, /\/engpod\/engpod\/og\.png/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
 test("ships all episodes, transcripts, and the GitHub Pages workflow", async () => {
   const root = new URL("../", import.meta.url);
-  const [catalog, transcriptNames, workflow, socialCard, handwritingFont, fontLicense] =
+  const [catalog, transcriptNames, workflow, socialCard, mobileManifest, mobileIcon, handwritingFont, fontLicense] =
     await Promise.all([
     readFile(new URL("app/data/episodes.json", root), "utf8"),
     readdir(new URL("public/transcripts/", root)),
     readFile(new URL(".github/workflows/deploy.yml", root), "utf8"),
     stat(new URL("public/og.png", root)),
+    readFile(new URL("public/manifest.webmanifest", root), "utf8"),
+    readFile(new URL("public/favicon.svg", root), "utf8"),
     stat(new URL("app/fonts/PatrickHand-Regular.ttf", root)),
     stat(new URL("public/fonts/PatrickHand-OFL.txt", root)),
   ]);
@@ -58,6 +62,10 @@ test("ships all episodes, transcripts, and the GitHub Pages workflow", async () 
   assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /path:\s*out/);
   assert.ok(socialCard.size > 100_000);
+  assert.match(mobileManifest, /"short_name": "engpod"/);
+  assert.match(mobileManifest, /"src": "logo\.jpg"/);
+  assert.match(mobileIcon, /#167D73/);
+  assert.doesNotMatch(mobileIcon, /#0C79D8|#2E9EFF/);
   assert.ok(handwritingFont.size > 100_000);
   assert.ok(fontLicense.size > 1_000);
 });
@@ -107,6 +115,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(styles, /#e85d3f|#ff7657|#c94229|#ff9178|#f9d9cc|#3b211c/);
   assert.match(styles, /@media \(max-width: 660px\)/);
   assert.match(styles, /--player-height: 160px/);
+  assert.match(styles, /\.lesson-heading h2 \{[\s\S]*?font-size: clamp\(30px, 9\.5vw, 43px\);/);
   assert.match(styles, /grid-template-columns: 34px minmax\(0, 1fr\) 34px/);
   assert.match(styles, /\.progress-time:last-child \{[\s\S]*?text-align: right;/);
   assert.match(styles, /\.transport button \{[\s\S]*?width: 50px;[\s\S]*?height: 50px;/);
