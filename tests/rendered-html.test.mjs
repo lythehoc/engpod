@@ -64,6 +64,12 @@ test("ships all episodes, transcripts, and the GitHub Pages workflow", async () 
   assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /path:\s*out/);
   assert.doesNotMatch(readme, /independent educational project|not affiliated with|endorsed by EnglishPod/i);
+  assert.doesNotMatch(readme, /^## Audio$|Audio streams from the public Internet Archive/m);
+  assert.match(readme, /Tap any episode to play, then resume later/);
+  assert.equal(
+    readme.match(/^-/gm)?.length,
+    4,
+  );
   assert.ok(socialCard.size > 100_000);
   assert.match(mobileManifest, /"short_name": "engpod"/);
   assert.match(mobileManifest, /"src": "logo\.jpg"/);
@@ -108,6 +114,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /sleepTimerMinutes \* 60_000/);
   assert.match(page, /: "Sleep"/);
   assert.match(page, /Mark episode as finished/);
+  assert.match(page, /className=\{`episode-complete \$\{completed \? "is-finished" : ""\}`\}/);
+  assert.match(page, /onToggleCompleted=\{updateCompleted\}/);
+  assert.doesNotMatch(page, /now-label|>NOW</);
   assert.match(page, /updateCompleted\(currentId, true\)/);
   assert.match(page, /orderedCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
   assert.match(page, /unfinishedVisible[\s\S]*?unfinishedAnywhere/);
@@ -147,8 +156,11 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
-  assert.match(styles, /\.eyebrow \.complete-toggle \{[^}]*width: 27px;[^}]*height: 27px;/);
-  assert.match(styles, /\.eyebrow \.complete-toggle\.is-finished \{[^}]*background: var\(--accent\);/);
+  assert.match(styles, /\.heading-complete \{[^}]*width: 44px;[^}]*height: 44px;/);
+  assert.match(styles, /\.heading-complete\.is-finished \{[^}]*background: var\(--accent\);/);
+  assert.match(styles, /\.episode-complete \{[^}]*width: 40px;[^}]*height: 40px;/);
+  assert.match(styles, /\.episode-complete\.is-finished \{[^}]*background: var\(--accent\);/);
+  assert.doesNotMatch(styles, /\.now-label|\.complete-toggle/);
   assert.match(styles, /\.speed-value \{[^}]*var\(--font-geist-mono\)/);
   assert.match(styles, /grid-template-columns: max-content minmax\(0, 1fr\)/);
   assert.match(styles, /\.speaker \{[\s\S]*?min-width: 32px;[\s\S]*?max-width: min\(126px, 32vw\);/);

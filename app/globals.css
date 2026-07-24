@@ -336,26 +336,37 @@ select:focus-visible {
 .episode-row {
   width: 100%;
   min-height: 64px;
-  padding: 8px 10px;
+  padding: 4px 6px 4px 4px;
   display: grid;
-  grid-template-columns: 39px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) 40px;
   align-items: center;
-  gap: 10px;
-  border: 0;
+  gap: 4px;
   border-radius: 13px;
   background: transparent;
-  text-align: left;
-  transition:
-    background 150ms ease,
-    transform 150ms ease;
+  transition: background 150ms ease;
 }
 
-.episode-row:active {
+.episode-select:active {
   transform: scale(0.985);
 }
 
 .episode-row.is-active {
   background: var(--accent-soft);
+}
+
+.episode-select {
+  width: 100%;
+  min-width: 0;
+  min-height: 56px;
+  padding: 4px 6px;
+  display: grid;
+  grid-template-columns: 39px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
 }
 
 .episode-number {
@@ -396,10 +407,23 @@ select:focus-visible {
   font-size: 10px;
 }
 
-.now-label {
-  color: var(--accent-strong);
-  font: 750 8px var(--font-geist-mono), monospace;
-  letter-spacing: 0.08em;
+.episode-complete {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--subtle);
+  font-size: 15px;
+}
+
+.episode-complete.is-finished {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
 }
 
 .empty-state {
@@ -500,6 +524,10 @@ select:focus-visible {
   box-shadow: 0 14px 22px -22px rgba(0, 0, 0, 0.45);
 }
 
+.lesson-heading > div {
+  min-width: 0;
+}
+
 .eyebrow {
   display: flex;
   align-items: center;
@@ -532,19 +560,21 @@ select:focus-visible {
   color: var(--text);
 }
 
-.eyebrow .complete-toggle {
-  width: 27px;
-  height: 27px;
-  padding: 0;
+.heading-complete {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
   display: grid;
   place-items: center;
-  border-radius: 7px;
-  color: var(--subtle);
-  font-size: 12px;
-  letter-spacing: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  box-shadow: none;
+  color: var(--accent-strong);
+  font-size: 18px;
 }
 
-.eyebrow .complete-toggle.is-finished {
+.heading-complete.is-finished {
   border-color: var(--accent);
   background: var(--accent);
   color: white;
@@ -1103,7 +1133,8 @@ select:focus-visible {
   }
 
   .lesson-heading {
-    align-items: flex-start;
+    align-items: flex-end;
+    gap: 12px;
     margin-bottom: 10px;
     padding: 13px 0 10px;
   }
