@@ -16,7 +16,7 @@
   --accent-soft: #f9d9cc;
   --blue: #2856d8;
   --blue-soft: #dbe3ff;
-  --player-height: 150px;
+  --player-height: 126px;
   --shadow: 0 24px 70px rgba(37, 31, 22, 0.13);
 }
 
@@ -736,6 +736,7 @@ select:focus-visible {
 }
 
 .progress-wrap {
+  position: relative;
   transform: translateY(-5px);
 }
 
@@ -797,6 +798,7 @@ select:focus-visible {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 24px;
+  padding-top: 10px;
 }
 
 .transport {
@@ -881,10 +883,13 @@ select:focus-visible {
 }
 
 .player-time {
-  max-width: 1160px;
-  margin: -5px auto 0;
+  position: absolute;
+  top: 10px;
+  right: 0;
+  left: 0;
   display: flex;
   justify-content: space-between;
+  pointer-events: none;
   color: var(--subtle);
   font: 600 9px var(--font-geist-mono), monospace;
 }
@@ -1011,7 +1016,7 @@ select:focus-visible {
 
 @media (max-width: 980px) {
   :root {
-    --player-height: 140px;
+    --player-height: 126px;
   }
 
   .app-shell {
@@ -1065,7 +1070,7 @@ select:focus-visible {
 
 @media (max-width: 660px) {
   :root {
-    --player-height: 188px;
+    --player-height: 174px;
   }
 
   .content-panel {
@@ -1183,10 +1188,6 @@ select:focus-visible {
 
   .control-label {
     font-size: 10px;
-  }
-
-  .player-time {
-    margin-top: -2px;
   }
 
   .guide-modal {

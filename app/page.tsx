@@ -860,6 +860,10 @@ export default function Home() {
                 } as React.CSSProperties
               }
             />
+            <div className="player-time" aria-live="off">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
           </div>
 
           <div className="player-main">
@@ -929,10 +933,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="player-time">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
         </section>
       </section>
 
