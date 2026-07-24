@@ -113,6 +113,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 68px;[\s\S]*?height: 68px;/);
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?box-shadow: none;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
+  assert.match(styles, /\.player-options > button\.is-on \{[^}]*var\(--accent\) 8%/);
+  assert.doesNotMatch(styles, /\.player-options > button\.is-on \{[^}]*background: var\(--accent-soft\)/);
   assert.match(styles, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?max-width: 96px;[\s\S]*?justify-self: center;/);
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
