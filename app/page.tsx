@@ -626,7 +626,7 @@ export default function Home() {
             />
             <div>
               <h1>eng<span>pod</span></h1>
-              <p>Listen. Read. Repeat.</p>
+              <p>small step every day</p>
             </div>
             <button
               className="mobile-close"

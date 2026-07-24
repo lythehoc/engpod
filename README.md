@@ -1,6 +1,6 @@
 # engpod 🎧
 
-Listen. Read. Repeat.
+small step every day
 
 `engpod` is a friendly, phone-ready English listening library with 365 short
 podcast lessons, transcripts, vocabulary notes, and a player that remembers
