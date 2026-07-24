@@ -159,27 +159,43 @@ function EpisodeRow({
   active,
   completed,
   onSelect,
+  onToggleCompleted,
 }: {
   episode: Episode;
   active: boolean;
   completed: boolean;
   onSelect: (episode: Episode) => void;
+  onToggleCompleted: (episodeId: number, completed: boolean) => void;
 }) {
   return (
-    <button
-      className={`episode-row ${active ? "is-active" : ""}`}
-      onClick={() => onSelect(episode)}
-      aria-current={active ? "true" : undefined}
-    >
-      <span className="episode-number" aria-hidden="true">
-        {active ? "▶" : completed ? "✓" : episode.id}
-      </span>
-      <span className="episode-copy">
-        <strong>{episode.title}</strong>
-        <span>{episode.level}</span>
-      </span>
-      {active && <span className="now-label">NOW</span>}
-    </button>
+    <div className={`episode-row ${active ? "is-active" : ""}`}>
+      <button
+        className="episode-select"
+        onClick={() => onSelect(episode)}
+        aria-current={active ? "true" : undefined}
+      >
+        <span className="episode-number" aria-hidden="true">
+          {active ? "▶" : episode.id}
+        </span>
+        <span className="episode-copy">
+          <strong>{episode.title}</strong>
+          <span>{episode.level}</span>
+        </span>
+      </button>
+      <button
+        className={`episode-complete ${completed ? "is-finished" : ""}`}
+        onClick={() => onToggleCompleted(episode.id, !completed)}
+        aria-label={
+          completed
+            ? `Mark ${episode.title} as unfinished`
+            : `Mark ${episode.title} as finished`
+        }
+        aria-pressed={completed}
+        title={completed ? "Marked as finished" : "Mark as finished"}
+      >
+        <span aria-hidden="true">✓</span>
+      </button>
+    </div>
   );
 }
 
@@ -769,6 +785,7 @@ export default function Home() {
                   active={episode.id === currentId}
                   completed={completedIds.includes(episode.id)}
                   onSelect={selectEpisode}
+                  onToggleCompleted={updateCompleted}
                 />
               ))}
             </section>
@@ -831,33 +848,33 @@ export default function Home() {
                     {currentEpisode.level}
                   </button>
                   <span>Episode {currentEpisode.id} of {episodes.length}</span>
-                  <button
-                    className={`complete-toggle ${
-                      completedIds.includes(currentId) ? "is-finished" : ""
-                    }`}
-                    onClick={() =>
-                      updateCompleted(
-                        currentId,
-                        !completedIds.includes(currentId),
-                      )
-                    }
-                    aria-label={
-                      completedIds.includes(currentId)
-                        ? "Mark episode as unfinished"
-                        : "Mark episode as finished"
-                    }
-                    aria-pressed={completedIds.includes(currentId)}
-                    title={
-                      completedIds.includes(currentId)
-                        ? "Marked as finished"
-                        : "Mark as finished"
-                    }
-                  >
-                    <span aria-hidden="true">✓</span>
-                  </button>
                 </div>
                 <h2>{currentEpisode.title}</h2>
               </div>
+              <button
+                className={`heading-complete ${
+                  completedIds.includes(currentId) ? "is-finished" : ""
+                }`}
+                onClick={() =>
+                  updateCompleted(
+                    currentId,
+                    !completedIds.includes(currentId),
+                  )
+                }
+                aria-label={
+                  completedIds.includes(currentId)
+                    ? "Mark episode as unfinished"
+                    : "Mark episode as finished"
+                }
+                aria-pressed={completedIds.includes(currentId)}
+                title={
+                  completedIds.includes(currentId)
+                    ? "Marked as finished"
+                    : "Mark as finished"
+                }
+              >
+                <span aria-hidden="true">✓</span>
+              </button>
             </div>
 
             <section className="transcript-card">

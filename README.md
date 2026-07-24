@@ -10,13 +10,10 @@ where you stopped.
 
 ## Highlights
 
-- Pick an episode and it starts playing immediately
-- Search, sort, shuffle, filter, and group lessons by level
-- Resume the last episode from the saved position
-- Remember loop, autoplay-next, transcript, speed, and display settings
-- Read local transcripts and vocabulary notes
-- Use comfortably on desktop and mobile browsers
-- Keep everything private in browser storage; no account or analytics
+- Tap any episode to play, then resume later from the saved position
+- Search, sort, shuffle, filter, and group 365 lessons by level
+- Read transcripts and vocabulary while saving your playback preferences
+- Private, account-free, and comfortable on desktop or mobile
 
 ## Run locally
 
@@ -28,12 +25,6 @@ npm run dev
 ```
 
 Open `http://localhost:3000`.
-
-## Audio
-
-Audio streams from the public Internet Archive `englishpod_all` collection.
-The player uses two direct HTTPS media nodes and automatically falls back to the
-collection download URL if one is unavailable.
 
 ## Credits
 
