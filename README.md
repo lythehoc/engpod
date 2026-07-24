@@ -44,6 +44,3 @@ Audio is served by
 The motivational tagline uses
 [Patrick Hand](https://fonts.google.com/specimen/Patrick+Hand), distributed
 under the included [SIL Open Font License](public/fonts/PatrickHand-OFL.txt).
-
-This is an independent educational project. It is not affiliated with or
-endorsed by EnglishPod.

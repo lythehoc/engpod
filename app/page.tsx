@@ -969,13 +969,6 @@ export default function Home() {
             aria-modal="true"
             aria-labelledby="guide-title"
           >
-            <button
-              className="modal-close"
-              onClick={() => setHelpOpen(false)}
-              aria-label="Close quick guide"
-            >
-              ×
-            </button>
             <span className="section-kicker">QUICK GUIDE</span>
             <h2 id="guide-title">Make each listen count</h2>
             <ol>

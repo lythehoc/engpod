@@ -39,11 +39,12 @@ test("renders the finished engpod library", async () => {
 
 test("ships all episodes, transcripts, and the GitHub Pages workflow", async () => {
   const root = new URL("../", import.meta.url);
-  const [catalog, transcriptNames, workflow, socialCard, mobileManifest, mobileIcon, handwritingFont, fontLicense] =
+  const [catalog, transcriptNames, workflow, readme, socialCard, mobileManifest, mobileIcon, handwritingFont, fontLicense] =
     await Promise.all([
     readFile(new URL("app/data/episodes.json", root), "utf8"),
     readdir(new URL("public/transcripts/", root)),
     readFile(new URL(".github/workflows/deploy.yml", root), "utf8"),
+    readFile(new URL("README.md", root), "utf8"),
     stat(new URL("public/og.png", root)),
     readFile(new URL("public/manifest.webmanifest", root), "utf8"),
     readFile(new URL("public/favicon.svg", root), "utf8"),
@@ -62,6 +63,7 @@ test("ships all episodes, transcripts, and the GitHub Pages workflow", async () 
   assert.match(workflow, /actions\/deploy-pages@v5/);
   assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /path:\s*out/);
+  assert.doesNotMatch(readme, /independent educational project|not affiliated with|endorsed by EnglishPod/i);
   assert.ok(socialCard.size > 100_000);
   assert.match(mobileManifest, /"short_name": "engpod"/);
   assert.match(mobileManifest, /"src": "logo\.jpg"/);
@@ -107,6 +109,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /: "Sleep"/);
   assert.equal(page.match(/className="soft-button"/g)?.length, 1);
   assert.match(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
+  assert.doesNotMatch(page, /className="modal-close"/);
   assert.doesNotMatch(page, /Surprise me|volume-control/);
   assert.equal(page.match(/small step every day/g)?.length, 1);
   assert.doesNotMatch(page, /Small steps, clear ears, confident English/);
@@ -132,7 +135,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(styles, /\.player-options > button\.is-on \{[^}]*background: var\(--accent-soft\)/);
   assert.match(styles, /grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?max-width: 82px;[\s\S]*?justify-self: center;/);
-  assert.match(styles, /\.guide-modal \{[\s\S]*?max-height: min\(78dvh, 620px\);[\s\S]*?border-radius: 24px 24px 0 0;/);
+  assert.doesNotMatch(styles, /\.modal-close|place-items: end center|max-height: min\(78dvh, 620px\)/);
+  assert.match(styles, /\.primary-button \{[^}]*margin-top: 18px;/);
+  assert.match(styles, /\.guide-modal \{[\s\S]*?padding: 28px 20px 20px;/);
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
