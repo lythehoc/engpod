@@ -83,9 +83,7 @@ select:focus-visible {
   grid-template-columns: minmax(310px, 360px) minmax(0, 1fr);
   height: 100dvh;
   min-height: 0;
-  background:
-    radial-gradient(circle at 80% 8%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 28rem),
-    var(--bg);
+  background: var(--bg);
 }
 
 .library-panel {
@@ -502,9 +500,8 @@ select:focus-visible {
   gap: 24px;
   margin-bottom: 28px;
   padding: clamp(24px, 5vh, 48px) 0 20px;
-  background: color-mix(in srgb, var(--bg) 96%, transparent);
+  background: var(--bg);
   box-shadow: 0 14px 22px -22px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(18px);
 }
 
 .eyebrow {
@@ -545,13 +542,6 @@ select:focus-visible {
   font-size: clamp(35px, 5vw, 66px);
   line-height: 0.98;
   letter-spacing: -0.065em;
-}
-
-.resume-note {
-  margin: 13px 0 0;
-  color: var(--accent-strong);
-  font-size: 12px;
-  font-weight: 650;
 }
 
 .transcript-card {
