@@ -90,6 +90,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.transport button \{[\s\S]*?width: 50px;[\s\S]*?height: 50px;/);
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 68px;[\s\S]*?height: 68px;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
+  assert.match(styles, /\.player-options \{[\s\S]*?grid-template-columns: 1fr auto 1fr;/);
+  assert.match(styles, /\.player-options > button:nth-child\(2\) \{[\s\S]*?justify-self: center;/);
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);

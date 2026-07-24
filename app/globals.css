@@ -1186,8 +1186,23 @@ select:focus-visible {
   .player-options {
     grid-column: 1;
     grid-row: 2;
-    justify-content: center;
-    gap: 7px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0;
+  }
+
+  .player-options > button:first-child {
+    justify-self: end;
+  }
+
+  .player-options > button:nth-child(2) {
+    justify-self: center;
+  }
+
+  .player-options > button:last-child {
+    justify-self: start;
   }
 
   .player-options > button {
