@@ -850,11 +850,10 @@ select:focus-visible {
 }
 
 .transport .track-button {
-  width: 52px;
-  height: 52px;
-  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
-  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
-  font-size: 17px;
+  width: 54px;
+  height: 54px;
+  border: 0;
+  background: transparent;
 }
 
 .transport .skip-button {
@@ -862,31 +861,17 @@ select:focus-visible {
   height: 50px;
 }
 
-.skip-glyph {
-  position: relative;
+.media-icon {
   width: 30px;
   height: 30px;
-  display: grid;
-  place-items: center;
+  display: block;
+  fill: currentColor;
+  pointer-events: none;
 }
 
-.skip-arrow {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: Arial, sans-serif;
-  font-size: 29px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.skip-glyph small {
-  position: relative;
-  z-index: 1;
-  margin-top: 1px;
-  font: 750 8px var(--font-geist-sans), Arial, sans-serif;
-  line-height: 1;
+.track-button .media-icon {
+  width: 32px;
+  height: 32px;
 }
 
 .transport .play-button {
@@ -895,7 +880,20 @@ select:focus-visible {
   background: var(--accent);
   box-shadow: none;
   color: white;
-  font-size: 25px;
+}
+
+.play-button .media-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.play-button .media-icon-play {
+  transform: translateX(2px);
+}
+
+.buffering-glyph {
+  font-size: 28px;
+  line-height: 1;
 }
 
 .player-options {
@@ -1074,6 +1072,10 @@ select:focus-visible {
     color: var(--text);
   }
 
+  .transport .track-button:hover {
+    background: transparent;
+  }
+
   .transport .play-button:hover {
     background: var(--accent-strong);
     color: white;
@@ -1242,9 +1244,8 @@ select:focus-visible {
   }
 
   .transport .track-button {
-    width: 56px;
-    height: 56px;
-    font-size: 18px;
+    width: 58px;
+    height: 58px;
   }
 
   .transport .skip-button {
@@ -1255,7 +1256,6 @@ select:focus-visible {
   .transport .play-button {
     width: 70px;
     height: 70px;
-    font-size: 26px;
   }
 
   .player-options {
