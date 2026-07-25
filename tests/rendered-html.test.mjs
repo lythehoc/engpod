@@ -163,7 +163,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(styles, /#e85d3f|#ff7657|#c94229|#ff9178|#f9d9cc|#3b211c/);
   assert.match(styles, /@media \(max-width: 660px\)/);
   assert.match(styles, /--player-height: 160px/);
-  assert.match(styles, /\.lesson-heading h2 \{[\s\S]*?font-size: clamp\(30px, 9\.5vw, 43px\);/);
+  assert.match(styles, /\.lesson-heading h2 \{[\s\S]*?font-size: clamp\(32px, 4\.2vw, 56px\);/);
+  assert.match(styles, /\.lesson-heading h2 \{[\s\S]*?font-size: clamp\(27px, 8vw, 36px\);/);
   assert.match(styles, /grid-template-columns: 34px minmax\(0, 1fr\) 34px/);
   assert.match(styles, /\.progress-time:last-child \{[\s\S]*?text-align: right;/);
   assert.match(styles, /\.transport button \{[\s\S]*?width: 52px;[\s\S]*?height: 52px;/);
