@@ -103,6 +103,10 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /groupByLevel/);
   assert.match(page, /selectedLevel/);
   assert.match(page, /transcriptVisible/);
+  assert.match(page, /if \(!transcriptVisible\) return;/);
+  assert.match(page, /setTranscript\(""\);\s*setTranscriptLoading\(true\);/);
+  assert.match(page, /setTimeout\(\(\) => controller\.abort\(\), 10_000\)/);
+  assert.match(page, /\[currentEpisode\.transcript_id, transcriptVisible\]/);
   assert.match(page, /sanitizeTranscriptHtml\(html\)/);
   assert.match(page, /querySelector\("h1"\)\?\.remove\(\)/);
   assert.doesNotMatch(page, /speaker-tone-|speakerTones|toneClass/);

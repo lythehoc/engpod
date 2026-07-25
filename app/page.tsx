@@ -299,6 +299,7 @@ export default function Home() {
       setCurrentTime(0);
       setDuration(0);
       setIsPlaying(false);
+      setTranscript("");
       setTranscriptLoading(true);
       setTranscriptError(false);
       setSidebarOpen(false);
@@ -547,8 +548,15 @@ export default function Home() {
   ]);
 
   useEffect(() => {
+    if (!transcriptVisible) return;
     const controller = new AbortController();
     let active = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      setTranscriptLoading(true);
+      setTranscriptError(false);
+    });
+    const timeoutId = window.setTimeout(() => controller.abort(), 10_000);
     fetch(
       `${BASE_PATH}/transcripts/${currentEpisode.transcript_id}.html`,
       { signal: controller.signal },
@@ -561,17 +569,19 @@ export default function Home() {
         if (!active) return;
         setTranscript(sanitizeTranscriptHtml(html));
       })
-      .catch((error: Error) => {
-        if (active && error.name !== "AbortError") setTranscriptError(true);
+      .catch(() => {
+        if (active) setTranscriptError(true);
       })
       .finally(() => {
+        window.clearTimeout(timeoutId);
         if (active) setTranscriptLoading(false);
       });
     return () => {
       active = false;
+      window.clearTimeout(timeoutId);
       controller.abort();
     };
-  }, [currentEpisode]);
+  }, [currentEpisode.transcript_id, transcriptVisible]);
 
   useEffect(() => {
     const audio = audioRef.current;
