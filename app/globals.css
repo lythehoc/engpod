@@ -93,7 +93,6 @@ select:focus-visible {
 
 .brand-block {
   padding: 24px 22px 10px;
-  border-bottom: 1px solid var(--line);
 }
 
 .brand-row {
@@ -250,15 +249,6 @@ select:focus-visible {
 
 .list-options label {
   display: grid;
-  gap: 5px;
-}
-
-.list-options label > span {
-  color: var(--subtle);
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .list-options select,

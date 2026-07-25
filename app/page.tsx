@@ -850,7 +850,6 @@ export default function Home() {
 
           <div className="list-options">
             <label>
-              <span>Sort</span>
               <select
                 value={sortMode}
                 onChange={(event) => setSortMode(event.target.value as SortMode)}
