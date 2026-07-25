@@ -3,6 +3,7 @@
 import {
   type ChangeEvent,
   type KeyboardEvent as ReactKeyboardEvent,
+  type TouchEvent as ReactTouchEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -201,6 +202,8 @@ function EpisodeRow({
 
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const episodeListRef = useRef<HTMLDivElement>(null);
+  const sidebarSwipeStartRef = useRef<{ x: number; y: number } | null>(null);
   const pendingAutoplayRef = useRef(false);
   const lastPositionWriteRef = useRef(0);
   const [currentId, setCurrentId] = useState(5);
@@ -412,6 +415,31 @@ export default function Home() {
     });
   }, []);
 
+  const handleSidebarTouchStart = useCallback(
+    (event: ReactTouchEvent<HTMLElement>) => {
+      const touch = event.touches[0];
+      sidebarSwipeStartRef.current = touch
+        ? { x: touch.clientX, y: touch.clientY }
+        : null;
+    },
+    [],
+  );
+
+  const handleSidebarTouchEnd = useCallback(
+    (event: ReactTouchEvent<HTMLElement>) => {
+      const start = sidebarSwipeStartRef.current;
+      const touch = event.changedTouches[0];
+      sidebarSwipeStartRef.current = null;
+      if (!start || !touch) return;
+      const distanceX = start.x - touch.clientX;
+      const distanceY = Math.abs(start.y - touch.clientY);
+      if (distanceX >= 56 && distanceX > distanceY * 1.25) {
+        setSidebarOpen(false);
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     let cancelled = false;
     queueMicrotask(() => {
@@ -469,6 +497,20 @@ export default function Home() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem(STORAGE.theme, theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const frameId = window.requestAnimationFrame(() => {
+      episodeListRef.current
+        ?.querySelector<HTMLElement>(".episode-row.is-active")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
+    });
+    return () => window.cancelAnimationFrame(frameId);
+  }, [sidebarOpen]);
 
   useEffect(() => {
     if (sleepTimerMinutes === 0) return;
@@ -683,7 +725,14 @@ export default function Home() {
         />
       )}
 
-      <aside className={`library-panel ${sidebarOpen ? "is-open" : ""}`}>
+      <aside
+        className={`library-panel ${sidebarOpen ? "is-open" : ""}`}
+        onTouchStart={handleSidebarTouchStart}
+        onTouchEnd={handleSidebarTouchEnd}
+        onTouchCancel={() => {
+          sidebarSwipeStartRef.current = null;
+        }}
+      >
         <div className="brand-block">
           <div className="brand-row">
             {/* Static local asset; optimization endpoints do not exist on Pages. */}
@@ -774,7 +823,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="episode-list">
+        <div className="episode-list" ref={episodeListRef}>
           <div className="results-line">
             <span>{visibleEpisodes.length} episodes</span>
             <span>{completedIds.length} finished</span>

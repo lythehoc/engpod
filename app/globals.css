@@ -952,7 +952,9 @@ select:focus-visible {
 
 .guide-modal h2 {
   margin: 8px 0 24px;
+  font-family: var(--font-handwriting), "Comic Sans MS", cursive;
   font-size: 30px;
+  font-weight: 400;
   letter-spacing: -0.05em;
 }
 
@@ -1060,6 +1062,7 @@ select:focus-visible {
     transform: translateX(-102%);
     transition: transform 220ms ease;
     box-shadow: 22px 0 70px rgba(0, 0, 0, 0.28);
+    touch-action: pan-y;
   }
 
   .library-panel.is-open {
