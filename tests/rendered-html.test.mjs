@@ -111,7 +111,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /querySelector\("h1"\)\?\.remove\(\)/);
   assert.doesNotMatch(page, /speaker-tone-|speakerTones|toneClass/);
   assert.doesNotMatch(styles, /--speaker-|speaker-tone-/);
-  assert.match(styles, /\.line \{[^}]*border: 1px solid var\(--line\);[^}]*border-radius: 14px;[^}]*background: color-mix\(in srgb, var\(--surface-2\) 28%, var\(--surface\)\);/);
+  assert.match(styles, /\.line \{[^}]*border: 1px solid var\(--line\);[^}]*border-radius: 18px;[^}]*background: color-mix\(in srgb, var\(--surface-2\) 28%, var\(--surface\)\);/);
   assert.match(styles, /\.speaker \{[^}]*border: 1px solid color-mix\(in srgb, var\(--accent\) 16%, var\(--line\)\);[^}]*background: color-mix\(in srgb, var\(--accent\) 7%, transparent\);[^}]*color: var\(--accent-strong\);/);
   assert.match(page, />Auto next</);
   assert.match(page, /SLEEP_TIMER_OPTIONS = \[0, 15, 30, 45, 60\]/);
@@ -129,6 +129,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /unfinishedVisible[\s\S]*?unfinishedAnywhere/);
   assert.match(page, /<span className="speed-value">\{playbackRate\}×<\/span>/);
   assert.match(page, /<span className="control-label">Speed<\/span>/);
+  assert.match(page, /className="track-button"/);
+  assert.match(page, /<span className="skip-arrow">⟲<\/span>/);
+  assert.match(page, /<span className="skip-arrow">⟳<\/span>/);
   assert.equal(page.match(/className="soft-button"/g)?.length, 1);
   assert.match(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
   assert.match(page, /querySelector<HTMLElement>\("\.episode-row\.is-active"\)/);
@@ -154,9 +157,13 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.lesson-heading h2 \{[\s\S]*?font-size: clamp\(30px, 9\.5vw, 43px\);/);
   assert.match(styles, /grid-template-columns: 34px minmax\(0, 1fr\) 34px/);
   assert.match(styles, /\.progress-time:last-child \{[\s\S]*?text-align: right;/);
-  assert.match(styles, /\.transport button \{[\s\S]*?width: 50px;[\s\S]*?height: 50px;/);
-  assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 68px;[\s\S]*?height: 68px;/);
+  assert.match(styles, /\.transport button \{[\s\S]*?width: 52px;[\s\S]*?height: 52px;/);
+  assert.match(styles, /\.transport \.track-button \{[\s\S]*?width: 56px;[\s\S]*?height: 56px;/);
+  assert.match(styles, /\.transport \.skip-button \{[\s\S]*?width: 54px;[\s\S]*?height: 54px;/);
+  assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 70px;[\s\S]*?height: 70px;[\s\S]*?font-size: 26px;/);
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?box-shadow: none;/);
+  assert.match(styles, /\.skip-glyph \{[^}]*width: 30px;[^}]*height: 30px;/);
+  assert.match(styles, /\.skip-arrow \{[^}]*font-size: 29px;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
   assert.match(styles, /\.player-options > button\.is-on \{[^}]*var\(--accent\) 8%/);
   assert.doesNotMatch(styles, /\.player-options > button\.is-on \{[^}]*background: var\(--accent-soft\)/);

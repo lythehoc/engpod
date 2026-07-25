@@ -1018,9 +1018,16 @@ export default function Home() {
                 aria-label="Back 10 seconds"
                 title="Back 10 seconds"
               >
-                ↶<small>10</small>
+                <span className="skip-glyph" aria-hidden="true">
+                  <span className="skip-arrow">⟲</span>
+                  <small>10</small>
+                </span>
               </button>
-              <button onClick={previousEpisode} aria-label="Previous episode">
+              <button
+                className="track-button"
+                onClick={previousEpisode}
+                aria-label="Previous episode"
+              >
                 |◀
               </button>
               <button
@@ -1030,7 +1037,11 @@ export default function Home() {
               >
                 {isBuffering ? "…" : isPlaying ? "Ⅱ" : "▶"}
               </button>
-              <button onClick={() => nextEpisode()} aria-label="Next episode">
+              <button
+                className="track-button"
+                onClick={() => nextEpisode()}
+                aria-label="Next episode"
+              >
                 ▶|
               </button>
               <button
@@ -1039,7 +1050,10 @@ export default function Home() {
                 aria-label="Forward 10 seconds"
                 title="Forward 10 seconds"
               >
-                ↷<small>10</small>
+                <span className="skip-glyph" aria-hidden="true">
+                  <span className="skip-arrow">⟳</span>
+                  <small>10</small>
+                </span>
               </button>
             </div>
 
