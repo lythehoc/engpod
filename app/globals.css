@@ -879,16 +879,12 @@ select:focus-visible {
   height: 70px;
   background: var(--accent);
   box-shadow: none;
-  color: white;
+  color: #fff;
 }
 
 .play-button .media-icon {
-  width: 34px;
-  height: 34px;
-}
-
-.play-button .media-icon-play {
-  transform: translateX(2px);
+  width: 44px;
+  height: 44px;
 }
 
 .buffering-glyph {

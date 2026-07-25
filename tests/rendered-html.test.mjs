@@ -168,7 +168,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?box-shadow: none;/);
   assert.match(styles, /\.media-icon \{[^}]*width: 30px;[^}]*height: 30px;/);
   assert.match(styles, /\.track-button \.media-icon \{[^}]*width: 32px;[^}]*height: 32px;/);
-  assert.match(styles, /\.play-button \.media-icon \{[^}]*width: 34px;[^}]*height: 34px;/);
+  assert.match(styles, /\.play-button \.media-icon \{[^}]*width: 44px;[^}]*height: 44px;/);
+  assert.doesNotMatch(styles, /\.media-icon-play \{[^}]*transform:/);
   assert.match(styles, /\.transport \.track-button \{[^}]*border: 0;[^}]*background: transparent;/);
   assert.match(styles, /\.player-options > button \{[\s\S]*?min-height: 44px;/);
   assert.match(styles, /\.player-options > button\.is-on \{[^}]*var\(--accent\) 8%/);
