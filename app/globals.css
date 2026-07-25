@@ -92,7 +92,7 @@ select:focus-visible {
 }
 
 .brand-block {
-  padding: 24px 22px 18px;
+  padding: 24px 22px 10px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -154,7 +154,7 @@ select:focus-visible {
 }
 
 .library-tools {
-  padding: 16px 16px 12px;
+  padding: 10px 16px 12px;
   border-bottom: 1px solid var(--line);
 }
 
