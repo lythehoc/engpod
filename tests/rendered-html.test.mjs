@@ -162,6 +162,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /grid-template-columns: 34px minmax\(0, 1fr\) 34px/);
   assert.match(styles, /\.progress-time:last-child \{[\s\S]*?text-align: right;/);
   assert.match(styles, /\.transport button \{[\s\S]*?width: 52px;[\s\S]*?height: 52px;/);
+  assert.match(styles, /\.transport button \{[^}]*padding: 0;[^}]*display: grid;[^}]*place-items: center;/);
   assert.match(styles, /\.transport \.track-button \{[\s\S]*?width: 58px;[\s\S]*?height: 58px;/);
   assert.match(styles, /\.transport \.skip-button \{[\s\S]*?width: 54px;[\s\S]*?height: 54px;/);
   assert.match(styles, /\.transport \.play-button \{[\s\S]*?width: 70px;[\s\S]*?height: 70px;/);
