@@ -154,7 +154,10 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(styles, /resume-note|radial-gradient/);
   assert.match(styles, /\.app-shell \{[\s\S]*?background: var\(--bg\);/);
   assert.match(styles, /\.brand-block \{[^}]*padding: 24px 22px 10px;/);
+  assert.doesNotMatch(styles, /\.brand-block \{[^}]*border-bottom:/);
   assert.match(styles, /\.library-tools \{[^}]*padding: 10px 16px 12px;/);
+  assert.doesNotMatch(page, /<span>Sort<\/span>/);
+  assert.doesNotMatch(styles, /\.list-options label > span/);
   assert.match(styles, /--accent: #167d73/);
   assert.match(styles, /--accent: #168f82/);
   assert.doesNotMatch(styles, /#e85d3f|#ff7657|#c94229|#ff9178|#f9d9cc|#3b211c/);
