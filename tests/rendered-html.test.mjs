@@ -127,6 +127,11 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /<span className="control-label">Speed<\/span>/);
   assert.equal(page.match(/className="soft-button"/g)?.length, 1);
   assert.match(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
+  assert.match(page, /querySelector<HTMLElement>\("\.episode-row\.is-active"\)/);
+  assert.match(page, /scrollIntoView\(\{[\s\S]*?behavior: "smooth",[\s\S]*?block: "center"/);
+  assert.match(page, /distanceX >= 56 && distanceX > distanceY \* 1\.25/);
+  assert.match(page, /onTouchStart=\{handleSidebarTouchStart\}/);
+  assert.match(page, /onTouchEnd=\{handleSidebarTouchEnd\}/);
   assert.doesNotMatch(page, /className="modal-close"/);
   assert.doesNotMatch(page, /Surprise me|volume-control/);
   assert.equal(page.match(/small step every day/g)?.length, 1);
@@ -156,6 +161,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(styles, /\.modal-close|place-items: end center|max-height: min\(78dvh, 620px\)/);
   assert.match(styles, /\.primary-button \{[^}]*margin-top: 18px;/);
   assert.match(styles, /\.guide-modal \{[\s\S]*?padding: 28px 20px 20px;/);
+  assert.match(styles, /\.guide-modal h2 \{[^}]*font-family: var\(--font-handwriting\)/);
+  assert.match(styles, /\.library-panel \{[\s\S]*?touch-action: pan-y;/);
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);
