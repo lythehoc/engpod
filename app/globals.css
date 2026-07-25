@@ -165,7 +165,7 @@ select:focus-visible {
   align-items: center;
   gap: 9px;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 16px;
   background: var(--bg);
   color: var(--muted);
 }
@@ -265,7 +265,7 @@ select:focus-visible {
 .list-options button {
   min-height: 36px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 14px;
   background: var(--surface);
   color: var(--muted);
   font-size: 11px;
@@ -341,7 +341,7 @@ select:focus-visible {
   grid-template-columns: minmax(0, 1fr) 40px;
   align-items: center;
   gap: 4px;
-  border-radius: 13px;
+  border-radius: 16px;
   background: transparent;
   transition: background 150ms ease;
 }
@@ -364,7 +364,7 @@ select:focus-visible {
   align-items: center;
   gap: 10px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 14px;
   background: transparent;
   text-align: left;
 }
@@ -375,7 +375,7 @@ select:focus-visible {
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--surface-2);
   color: var(--subtle);
   font: 650 11px var(--font-geist-mono), monospace;
@@ -407,7 +407,7 @@ select:focus-visible {
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--surface-2);
   box-shadow: none;
   color: var(--muted);
@@ -480,7 +480,7 @@ select:focus-visible {
   min-height: 36px;
   padding: 0 11px;
   border: 1px solid var(--line);
-  border-radius: 11px;
+  border-radius: 14px;
   background: var(--surface);
   color: var(--muted);
   font-size: 12px;
@@ -534,7 +534,7 @@ select:focus-visible {
 .eyebrow button {
   padding: 5px 9px;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 10px;
   background: transparent;
   color: var(--muted);
   font: 700 9px var(--font-geist-mono), monospace;
@@ -561,7 +561,7 @@ select:focus-visible {
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 15px;
   background: var(--surface-2);
   box-shadow: none;
   color: var(--muted);
@@ -616,7 +616,7 @@ select:focus-visible {
   min-height: 38px;
   padding: 0 12px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 14px;
   background: var(--surface-2);
   color: var(--muted);
   font-size: 11px;
@@ -655,7 +655,7 @@ select:focus-visible {
   gap: 14px;
   padding: 13px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 18px;
   background: color-mix(in srgb, var(--surface-2) 28%, var(--surface));
 }
 
@@ -669,7 +669,7 @@ select:focus-visible {
   display: grid;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--line));
-  border-radius: 8px;
+  border-radius: 11px;
   background: color-mix(in srgb, var(--accent) 7%, transparent);
   color: var(--accent-strong);
   font: 750 12px var(--font-geist-mono), monospace;
@@ -695,7 +695,7 @@ select:focus-visible {
   min-width: 0;
   padding: 16px;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 17px;
   background: var(--bg);
 }
 
@@ -730,7 +730,7 @@ select:focus-visible {
 .transcript-error {
   padding: 30px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 18px;
   background: var(--bg);
   color: var(--muted);
 }
@@ -849,18 +849,53 @@ select:focus-visible {
   font-weight: 750;
 }
 
-.transport button small {
-  margin-left: -2px;
-  font-size: 7px;
+.transport .track-button {
+  width: 52px;
+  height: 52px;
+  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+  font-size: 17px;
+}
+
+.transport .skip-button {
+  width: 50px;
+  height: 50px;
+}
+
+.skip-glyph {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+}
+
+.skip-arrow {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: Arial, sans-serif;
+  font-size: 29px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.skip-glyph small {
+  position: relative;
+  z-index: 1;
+  margin-top: 1px;
+  font: 750 8px var(--font-geist-sans), Arial, sans-serif;
+  line-height: 1;
 }
 
 .transport .play-button {
-  width: 68px;
-  height: 68px;
+  width: 70px;
+  height: 70px;
   background: var(--accent);
   box-shadow: none;
   color: white;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .player-options {
@@ -974,7 +1009,7 @@ select:focus-visible {
   column-gap: 12px;
   padding: 13px;
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 17px;
   background: var(--bg);
 }
 
@@ -1007,7 +1042,7 @@ select:focus-visible {
   min-height: 46px;
   margin-top: 18px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--accent);
   color: white;
   font-weight: 750;
@@ -1201,15 +1236,26 @@ select:focus-visible {
   }
 
   .transport button {
-    width: 50px;
-    height: 50px;
-    font-size: 16px;
+    width: 52px;
+    height: 52px;
+    font-size: 17px;
+  }
+
+  .transport .track-button {
+    width: 56px;
+    height: 56px;
+    font-size: 18px;
+  }
+
+  .transport .skip-button {
+    width: 54px;
+    height: 54px;
   }
 
   .transport .play-button {
-    width: 68px;
-    height: 68px;
-    font-size: 21px;
+    width: 70px;
+    height: 70px;
+    font-size: 26px;
   }
 
   .player-options {
