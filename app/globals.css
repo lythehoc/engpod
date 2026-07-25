@@ -849,6 +849,12 @@ select:focus-visible {
   font-weight: 750;
 }
 
+.transport button {
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
 .transport .track-button {
   width: 54px;
   height: 54px;
