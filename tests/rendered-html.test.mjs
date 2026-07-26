@@ -115,7 +115,10 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.speaker \{[^}]*border: 1px solid color-mix\(in srgb, var\(--accent\) 16%, var\(--line\)\);[^}]*background: color-mix\(in srgb, var\(--accent\) 7%, transparent\);[^}]*color: var\(--accent-strong\);/);
   assert.match(page, />Auto next</);
   assert.match(page, /SLEEP_TIMER_OPTIONS = \[0, 15, 30, 45, 60\]/);
-  assert.match(page, /sleepTimerMinutes \* 60_000/);
+  assert.match(page, /function formatCountdown\(value: number\)/);
+  assert.match(page, /setInterval\(updateRemainingTime, 1_000\)/);
+  assert.match(page, /sleepTimerEndAt - Date\.now\(\)/);
+  assert.match(page, /formatCountdown\(sleepTimerRemainingSeconds\)/);
   assert.match(page, /: "Sleep"/);
   assert.match(page, /Mark episode as finished/);
   assert.match(page, /className=\{`episode-complete \$\{completed \? "is-finished" : ""\}`\}/);
