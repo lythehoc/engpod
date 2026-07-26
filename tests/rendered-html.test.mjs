@@ -19,6 +19,8 @@ test("renders the finished engpod library", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
+  const repositoryOwner =
+    process.env.GITHUB_REPOSITORY?.split("/")[0] ?? "demo-user";
   assert.match(html, /<title>engpod - small step every day<\/title>/i);
   assert.doesNotMatch(html, /engpod — small step every day/i);
   assert.match(html, /small step every day/i);
@@ -30,7 +32,11 @@ test("renders the finished engpod library", async () => {
   assert.doesNotMatch(html, /Surprise me|aria-label="Volume"|volume-control/);
   assert.doesNotMatch(html, /NOW PLAYING|ARCHIVE AUDIO/);
   assert.match(html, /Open Elementary episodes/);
-  assert.match(html, /https:\/\/demo-user\.github\.io\/engpod\/og\.png/);
+  assert.ok(
+    html.includes(
+      `https://${repositoryOwner}.github.io/engpod/og.png`,
+    ),
+  );
   assert.match(html, /\/engpod\/favicon\.svg/);
   assert.match(html, /\/engpod\/manifest\.webmanifest/);
   assert.doesNotMatch(html, /\/engpod\/engpod\/og\.png/);
