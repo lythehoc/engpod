@@ -146,6 +146,11 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /distanceX >= 56 && distanceX > distanceY \* 1\.25/);
   assert.match(page, /onTouchStart=\{handleSidebarTouchStart\}/);
   assert.match(page, /onTouchEnd=\{handleSidebarTouchEnd\}/);
+  assert.match(page, /onTouchStart=\{handlePlayerTouchStart\}/);
+  assert.match(page, /onTouchEnd=\{handlePlayerTouchEnd\}/);
+  assert.match(page, /event\.target\.closest\("button, input, select, a"\)/);
+  assert.match(page, /distanceX = touch\.clientX - start\.x/);
+  assert.match(page, /setSidebarOpen\(true\);/);
   assert.doesNotMatch(page, /className="modal-close"/);
   assert.doesNotMatch(page, /Surprise me|volume-control/);
   assert.equal(page.match(/small step every day/g)?.length, 1);
@@ -191,6 +196,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.guide-modal \{[\s\S]*?padding: 28px 20px 20px;/);
   assert.match(styles, /\.guide-modal h2 \{[^}]*font-family: var\(--font-handwriting\)/);
   assert.match(styles, /\.library-panel \{[\s\S]*?touch-action: pan-y;/);
+  assert.match(styles, /\.content-panel \{[\s\S]*?touch-action: pan-y;/);
   assert.match(styles, /@media \(hover: hover\) and \(pointer: fine\)/);
   assert.match(styles, /-webkit-tap-highlight-color: transparent/);
   assert.match(styles, /\.lesson-heading \{[\s\S]*?position: sticky;/);

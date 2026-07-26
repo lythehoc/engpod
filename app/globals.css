@@ -1137,6 +1137,7 @@ select:focus-visible {
 
   .content-panel {
     grid-template-rows: 54px minmax(0, 1fr) auto;
+    touch-action: pan-y;
   }
 
   .topbar {
