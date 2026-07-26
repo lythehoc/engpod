@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  memo,
   type ChangeEvent,
   type KeyboardEvent as ReactKeyboardEvent,
   type TouchEvent as ReactTouchEvent,
@@ -47,6 +48,18 @@ const LEVEL_ORDER = [
   "Global View",
   "Advanced Media",
 ];
+const EPISODE_BY_ID = new Map(
+  episodes.map((episode) => [episode.id, episode]),
+);
+const EPISODE_INDEX_BY_ID = new Map(
+  episodes.map((episode, index) => [episode.id, index]),
+);
+const EPISODE_COUNT_BY_LEVEL = new Map(
+  LEVEL_ORDER.map((level) => [
+    level,
+    episodes.filter((episode) => episode.level === level).length,
+  ]),
+);
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const DEFAULT_AUDIO_BASE =
   "https://ia800408.us.archive.org/10/items/englishpod_all";
@@ -200,7 +213,7 @@ function sanitizeTranscriptHtml(html: string) {
   return parsed.body.innerHTML;
 }
 
-function EpisodeRow({
+const EpisodeRow = memo(function EpisodeRow({
   episode,
   active,
   completed,
@@ -243,7 +256,7 @@ function EpisodeRow({
       </button>
     </div>
   );
-}
+});
 
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -278,9 +291,9 @@ export default function Home() {
   const [audioSourceIndex, setAudioSourceIndex] = useState(0);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
 
-  const currentEpisode =
-    episodes.find((episode) => episode.id === currentId) ?? episodes[0];
-  const currentIndex = episodes.findIndex((episode) => episode.id === currentId);
+  const currentEpisode = EPISODE_BY_ID.get(currentId) ?? episodes[0];
+  const currentIndex = EPISODE_INDEX_BY_ID.get(currentId) ?? 0;
+  const completedIdSet = useMemo(() => new Set(completedIds), [completedIds]);
   const audioFileName = `${currentEpisode.transcript_id}pb.mp3`;
   const audioUrl = `${EXTERNAL_AUDIO_BASES[audioSourceIndex]}/${audioFileName}`;
 
@@ -890,7 +903,7 @@ export default function Home() {
               const count =
                 level === "All"
                   ? episodes.length
-                  : episodes.filter((episode) => episode.level === level).length;
+                  : EPISODE_COUNT_BY_LEVEL.get(level) ?? 0;
               return (
                 <button
                   key={level}
@@ -943,7 +956,7 @@ export default function Home() {
                   key={episode.id}
                   episode={episode}
                   active={episode.id === currentId}
-                  completed={completedIds.includes(episode.id)}
+                  completed={completedIdSet.has(episode.id)}
                   onSelect={selectEpisode}
                   onToggleCompleted={updateCompleted}
                 />
@@ -1020,22 +1033,22 @@ export default function Home() {
               </div>
               <button
                 className={`heading-complete ${
-                  completedIds.includes(currentId) ? "is-finished" : ""
+                  completedIdSet.has(currentId) ? "is-finished" : ""
                 }`}
                 onClick={() =>
                   updateCompleted(
                     currentId,
-                    !completedIds.includes(currentId),
+                    !completedIdSet.has(currentId),
                   )
                 }
                 aria-label={
-                  completedIds.includes(currentId)
+                  completedIdSet.has(currentId)
                     ? "Mark episode as unfinished"
                     : "Mark episode as finished"
                 }
-                aria-pressed={completedIds.includes(currentId)}
+                aria-pressed={completedIdSet.has(currentId)}
                 title={
-                  completedIds.includes(currentId)
+                  completedIdSet.has(currentId)
                     ? "Marked as finished"
                     : "Mark as finished"
                 }

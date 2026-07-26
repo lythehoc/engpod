@@ -63,6 +63,9 @@ test("ships all episodes, transcripts, and the GitHub Pages workflow", async () 
   assert.match(workflow, /actions\/deploy-pages@v5/);
   assert.match(workflow, /node-version:\s*24/);
   assert.match(workflow, /path:\s*out/);
+  assert.match(workflow, /run:\s*npm run lint/);
+  assert.match(workflow, /run:\s*node --test tests\/rendered-html\.test\.mjs/);
+  assert.match(workflow, /permissions:\s*\{\}/);
   assert.doesNotMatch(readme, /independent educational project|not affiliated with|endorsed by EnglishPod/i);
   assert.doesNotMatch(readme, /^## Audio$|Audio streams from the public Internet Archive/m);
   assert.match(readme, /Tap any episode to play, then resume later/);
@@ -108,6 +111,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /setTimeout\(\(\) => controller\.abort\(\), 10_000\)/);
   assert.match(page, /\[currentEpisode\.transcript_id, transcriptVisible\]/);
   assert.match(page, /sanitizeTranscriptHtml\(html\)/);
+  assert.match(page, /const EpisodeRow = memo\(function EpisodeRow/);
+  assert.match(page, /const completedIdSet = useMemo\(\(\) => new Set\(completedIds\)/);
+  assert.match(page, /completed=\{completedIdSet\.has\(episode\.id\)\}/);
   assert.match(page, /querySelector\("h1"\)\?\.remove\(\)/);
   assert.doesNotMatch(page, /speaker-tone-|speakerTones|toneClass/);
   assert.doesNotMatch(styles, /--speaker-|speaker-tone-/);
