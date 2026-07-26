@@ -483,6 +483,13 @@ export default function Home() {
 
   const handleSidebarTouchStart = useCallback(
     (event: ReactTouchEvent<HTMLElement>) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest("[data-drawer-swipe-ignore]")
+      ) {
+        sidebarSwipeStartRef.current = null;
+        return;
+      }
       const touch = event.touches[0];
       sidebarSwipeStartRef.current = touch
         ? { x: touch.clientX, y: touch.clientY }
@@ -898,7 +905,11 @@ export default function Home() {
             )}
           </label>
 
-          <div className="level-filters" aria-label="Filter by level">
+          <div
+            className="level-filters"
+            aria-label="Filter by level"
+            data-drawer-swipe-ignore
+          >
             {["All", ...levels].map((level) => {
               const count =
                 level === "All"

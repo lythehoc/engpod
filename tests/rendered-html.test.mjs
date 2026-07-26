@@ -159,6 +159,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /distanceX >= 56 && distanceX > distanceY \* 1\.25/);
   assert.match(page, /onTouchStart=\{handleSidebarTouchStart\}/);
   assert.match(page, /onTouchEnd=\{handleSidebarTouchEnd\}/);
+  assert.match(page, /closest\("\[data-drawer-swipe-ignore\]"\)/);
+  assert.match(page, /className="level-filters"[\s\S]*?data-drawer-swipe-ignore/);
   assert.match(page, /onTouchStart=\{handlePlayerTouchStart\}/);
   assert.match(page, /onTouchEnd=\{handlePlayerTouchEnd\}/);
   assert.match(page, /event\.target\.closest\("button, input, select, a"\)/);
