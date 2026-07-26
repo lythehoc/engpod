@@ -26,6 +26,18 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Quality checks
+
+The `tests` folder contains automated regression checks for the episode
+catalog, transcripts, player behavior, mobile layout, and GitHub Pages output.
+GitHub Actions runs these checks before publishing, and the folder itself is
+not part of the deployed website.
+
+```bash
+npm run lint
+npm test
+```
+
 ## Credits
 
 Episode metadata and transcripts were adapted from
