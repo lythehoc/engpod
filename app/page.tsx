@@ -249,6 +249,7 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const episodeListRef = useRef<HTMLDivElement>(null);
   const sidebarSwipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const playerSwipeStartRef = useRef<{ x: number; y: number } | null>(null);
   const pendingAutoplayRef = useRef(false);
   const lastPositionWriteRef = useRef(0);
   const [currentId, setCurrentId] = useState(5);
@@ -487,6 +488,38 @@ export default function Home() {
       const distanceY = Math.abs(start.y - touch.clientY);
       if (distanceX >= 56 && distanceX > distanceY * 1.25) {
         setSidebarOpen(false);
+      }
+    },
+    [],
+  );
+
+  const handlePlayerTouchStart = useCallback(
+    (event: ReactTouchEvent<HTMLElement>) => {
+      if (
+        !(event.target instanceof Element) ||
+        event.target.closest("button, input, select, a")
+      ) {
+        playerSwipeStartRef.current = null;
+        return;
+      }
+      const touch = event.touches[0];
+      playerSwipeStartRef.current = touch
+        ? { x: touch.clientX, y: touch.clientY }
+        : null;
+    },
+    [],
+  );
+
+  const handlePlayerTouchEnd = useCallback(
+    (event: ReactTouchEvent<HTMLElement>) => {
+      const start = playerSwipeStartRef.current;
+      const touch = event.changedTouches[0];
+      playerSwipeStartRef.current = null;
+      if (!start || !touch) return;
+      const distanceX = touch.clientX - start.x;
+      const distanceY = Math.abs(touch.clientY - start.y);
+      if (distanceX >= 56 && distanceX > distanceY * 1.25) {
+        setSidebarOpen(true);
       }
     },
     [],
@@ -937,7 +970,14 @@ export default function Home() {
         </div>
       </aside>
 
-      <section className="content-panel">
+      <section
+        className="content-panel"
+        onTouchStart={handlePlayerTouchStart}
+        onTouchEnd={handlePlayerTouchEnd}
+        onTouchCancel={() => {
+          playerSwipeStartRef.current = null;
+        }}
+      >
         <header className="topbar">
           <button
             className="menu-button"
