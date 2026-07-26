@@ -862,10 +862,7 @@ export default function Home() {
           <div className="brand-actions">
             <button
               className="soft-button"
-              onClick={() => {
-                setSidebarOpen(false);
-                setHelpOpen(true);
-              }}
+              onClick={() => setHelpOpen(true)}
             >
               ? <span>Quick guide</span>
             </button>

@@ -140,7 +140,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /<MediaIcon name="forward10" \/>/);
   assert.doesNotMatch(page, /skip-glyph|skip-arrow|⟲|⟳|\|◀|▶\|/);
   assert.equal(page.match(/className="soft-button"/g)?.length, 1);
-  assert.match(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
+  assert.match(page, /className="soft-button"[\s\S]*?onClick=\{\(\) => setHelpOpen\(true\)\}/);
+  assert.doesNotMatch(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
   assert.match(page, /querySelector<HTMLElement>\("\.episode-row\.is-active"\)/);
   assert.match(page, /scrollIntoView\(\{[\s\S]*?behavior: "smooth",[\s\S]*?block: "center"/);
   assert.match(page, /distanceX >= 56 && distanceX > distanceY \* 1\.25/);
