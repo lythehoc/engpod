@@ -114,6 +114,13 @@ function formatTime(value: number) {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
+function formatCountdown(value: number) {
+  const safeValue = Math.max(0, Math.ceil(value));
+  const minutes = Math.floor(safeValue / 60);
+  const seconds = safeValue % 60;
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
 function readNumberMap(key: string): Record<string, number> {
   try {
     const parsed: unknown = JSON.parse(localStorage.getItem(key) ?? "{}");
@@ -263,6 +270,8 @@ export default function Home() {
   const [loop, setLoop] = useState(false);
   const [autoplayNext, setAutoplayNext] = useState(true);
   const [sleepTimerMinutes, setSleepTimerMinutes] = useState(0);
+  const [sleepTimerEndAt, setSleepTimerEndAt] = useState<number | null>(null);
+  const [sleepTimerRemainingSeconds, setSleepTimerRemainingSeconds] = useState(0);
   const [completedIds, setCompletedIds] = useState<number[]>([]);
   const [helpOpen, setHelpOpen] = useState(false);
   const [audioSourceIndex, setAudioSourceIndex] = useState(0);
@@ -446,13 +455,17 @@ export default function Home() {
   }, []);
 
   const cycleSleepTimer = useCallback(() => {
-    setSleepTimerMinutes((current) => {
-      const index = SLEEP_TIMER_OPTIONS.indexOf(
-        current as (typeof SLEEP_TIMER_OPTIONS)[number],
-      );
-      return SLEEP_TIMER_OPTIONS[(index + 1) % SLEEP_TIMER_OPTIONS.length];
-    });
-  }, []);
+    const index = SLEEP_TIMER_OPTIONS.indexOf(
+      sleepTimerMinutes as (typeof SLEEP_TIMER_OPTIONS)[number],
+    );
+    const nextMinutes =
+      SLEEP_TIMER_OPTIONS[(index + 1) % SLEEP_TIMER_OPTIONS.length];
+    setSleepTimerMinutes(nextMinutes);
+    setSleepTimerRemainingSeconds(nextMinutes * 60);
+    setSleepTimerEndAt(
+      nextMinutes > 0 ? Date.now() + nextMinutes * 60_000 : null,
+    );
+  }, [sleepTimerMinutes]);
 
   const handleSidebarTouchStart = useCallback(
     (event: ReactTouchEvent<HTMLElement>) => {
@@ -552,15 +565,27 @@ export default function Home() {
   }, [sidebarOpen]);
 
   useEffect(() => {
-    if (sleepTimerMinutes === 0) return;
+    if (sleepTimerEndAt === null) return;
+    const updateRemainingTime = () => {
+      setSleepTimerRemainingSeconds(
+        Math.max(0, Math.ceil((sleepTimerEndAt - Date.now()) / 1000)),
+      );
+    };
+    updateRemainingTime();
+    const intervalId = window.setInterval(updateRemainingTime, 1_000);
     const timerId = window.setTimeout(() => {
       audioRef.current?.pause();
       setIsPlaying(false);
       setIsBuffering(false);
       setSleepTimerMinutes(0);
-    }, sleepTimerMinutes * 60_000);
-    return () => window.clearTimeout(timerId);
-  }, [sleepTimerMinutes]);
+      setSleepTimerRemainingSeconds(0);
+      setSleepTimerEndAt(null);
+    }, Math.max(0, sleepTimerEndAt - Date.now()));
+    return () => {
+      window.clearInterval(intervalId);
+      window.clearTimeout(timerId);
+    };
+  }, [sleepTimerEndAt]);
 
   useEffect(() => {
     if (!settingsLoaded) return;
@@ -1118,19 +1143,21 @@ export default function Home() {
                 onClick={cycleSleepTimer}
                 aria-label={
                   sleepTimerMinutes > 0
-                    ? `Sleep timer set for ${sleepTimerMinutes} minutes`
+                    ? `Sleep timer, ${formatCountdown(sleepTimerRemainingSeconds)} remaining`
                     : "Sleep timer off"
                 }
                 aria-pressed={sleepTimerMinutes > 0}
                 title={
                   sleepTimerMinutes > 0
-                    ? `Pause after ${sleepTimerMinutes} minutes`
+                    ? `${formatCountdown(sleepTimerRemainingSeconds)} remaining`
                     : "Set a sleep timer"
                 }
               >
                 <span className="sleep-icon" aria-hidden="true">☾</span>
                 <span className="control-label">
-                  {sleepTimerMinutes > 0 ? `${sleepTimerMinutes}m` : "Sleep"}
+                  {sleepTimerMinutes > 0
+                    ? formatCountdown(sleepTimerRemainingSeconds)
+                    : "Sleep"}
                 </span>
               </button>
               <button
