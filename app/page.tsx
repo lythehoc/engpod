@@ -872,23 +872,23 @@ export default function Home() {
               alt=""
               className="brand-logo"
             />
-            <div>
+            <div className="brand-name">
               <h1>eng<span>pod</span></h1>
             </div>
+            <button
+              className="guide-icon-button"
+              onClick={() => setHelpOpen(true)}
+              aria-label="Open quick guide"
+              title="Quick guide"
+            >
+              <span aria-hidden="true">?</span>
+            </button>
             <button
               className="mobile-close"
               onClick={() => setSidebarOpen(false)}
               aria-label="Close episode library"
             >
               ×
-            </button>
-          </div>
-          <div className="brand-actions">
-            <button
-              className="soft-button"
-              onClick={() => setHelpOpen(true)}
-            >
-              ? <span>Quick guide</span>
             </button>
           </div>
         </div>

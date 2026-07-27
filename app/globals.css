@@ -120,35 +120,30 @@ select:focus-visible {
   color: var(--accent);
 }
 
-.brand-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 18px;
+.brand-name {
+  min-width: 0;
+  flex: 1;
 }
 
-.soft-button {
-  min-height: 36px;
-  padding: 7px 11px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+.guide-icon-button,
+.mobile-close {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 14px;
   background: var(--surface-2);
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 650;
-  text-transform: capitalize;
+}
+
+.guide-icon-button {
+  font: 700 17px var(--font-geist-mono), monospace;
 }
 
 .mobile-close {
   display: none;
-  margin-left: auto;
-  width: 40px;
-  height: 40px;
   border: 0;
   border-radius: 50%;
-  background: var(--surface-2);
   font-size: 26px;
 }
 
@@ -1021,7 +1016,7 @@ select:focus-visible {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .soft-button:hover {
+  .guide-icon-button:hover {
     color: var(--text);
     border-color: color-mix(in srgb, var(--text) 25%, transparent);
   }

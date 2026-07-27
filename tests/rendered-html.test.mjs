@@ -162,8 +162,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /<MediaIcon name="next" \/>/);
   assert.match(page, /<MediaIcon name="forward10" \/>/);
   assert.doesNotMatch(page, /skip-glyph|skip-arrow|⟲|⟳|\|◀|▶\|/);
-  assert.equal(page.match(/className="soft-button"/g)?.length, 1);
-  assert.match(page, /className="soft-button"[\s\S]*?onClick=\{\(\) => setHelpOpen\(true\)\}/);
+  assert.doesNotMatch(page, /className="soft-button"|brand-actions/);
+  assert.match(page, /className="brand-name"[\s\S]*?className="guide-icon-button"[\s\S]*?className="mobile-close"/);
+  assert.match(page, /className="guide-icon-button"[\s\S]*?onClick=\{\(\) => setHelpOpen\(true\)\}[\s\S]*?aria-label="Open quick guide"[\s\S]*?<span aria-hidden="true">\?<\/span>/);
   assert.doesNotMatch(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
   assert.match(page, /querySelector<HTMLElement>\("\.episode-row\.is-active"\)/);
   assert.match(page, /scrollIntoView\(\{[\s\S]*?behavior: "smooth",[\s\S]*?block: "center"/);
@@ -184,6 +185,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(page, /resumeNotice|setResumeNotice|Welcome back|Saved on this device/);
   assert.doesNotMatch(page, /Your episode, position, filters|Not affiliated with or endorsed/);
   assert.doesNotMatch(styles, /\.brand-row p/);
+  assert.doesNotMatch(styles, /\.brand-actions|\.soft-button/);
+  assert.match(styles, /\.brand-name \{[^}]*flex: 1;/);
+  assert.match(styles, /\.guide-icon-button,[\s\S]*?\.mobile-close \{[\s\S]*?width: 40px;[\s\S]*?height: 40px;/);
   assert.doesNotMatch(styles, /project-disclaimer/);
   assert.doesNotMatch(styles, /resume-note|radial-gradient/);
   assert.match(styles, /\.app-shell \{[\s\S]*?background: var\(--bg\);/);
