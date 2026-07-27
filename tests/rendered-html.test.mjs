@@ -109,7 +109,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
 
   assert.match(page, /autoplay = true/);
   assert.match(page, /englishpod:settings-v1/);
-  assert.match(page, /groupByLevel/);
+  assert.doesNotMatch(page, /groupByLevel|Group levels|groupedEpisodes/);
   assert.match(page, /selectedLevel/);
   assert.match(page, /type CompletionFilter = "all" \| "unfinished" \| "finished"/);
   assert.match(page, /completionFilter: CompletionFilter/);
@@ -193,8 +193,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.completion-filters \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
   assert.match(styles, /\.completion-filters button \{[\s\S]*?min-height: 43px;/);
   assert.doesNotMatch(page, /<span>Sort<\/span>/);
-  assert.match(styles, /\.list-options \{[^}]*display: flex;[^}]*justify-content: flex-end;/);
-  assert.doesNotMatch(styles, /\.list-options (?:label|select)/);
+  assert.doesNotMatch(styles, /\.list-options|\.group-heading|\.episode-group/);
   assert.match(styles, /--accent: #167d73/);
   assert.match(styles, /--accent: #168f82/);
   assert.doesNotMatch(styles, /#e85d3f|#ff7657|#c94229|#ff9178|#f9d9cc|#3b211c/);

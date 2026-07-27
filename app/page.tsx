@@ -29,7 +29,6 @@ type Theme = "light" | "dark";
 type PersistedSettings = {
   loop: boolean;
   autoplayNext: boolean;
-  groupByLevel: boolean;
   selectedLevel: string;
   completionFilter: CompletionFilter;
   transcriptVisible: boolean;
@@ -274,7 +273,6 @@ export default function Home() {
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [completionFilter, setCompletionFilter] =
     useState<CompletionFilter>("all");
-  const [groupByLevel, setGroupByLevel] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [transcriptVisible, setTranscriptVisible] = useState(true);
   const [transcript, setTranscript] = useState("");
@@ -345,22 +343,6 @@ export default function Home() {
 
     return [...filtered].sort((a, b) => a.id - b.id);
   }, [completedIdSet, completionFilter, matchingEpisodes]);
-
-  const groupedEpisodes = useMemo(() => {
-    if (!groupByLevel) return [["Episodes", visibleEpisodes]] as [
-      string,
-      Episode[],
-    ][];
-    return levels
-      .map(
-        (level) =>
-          [
-            level,
-            visibleEpisodes.filter((episode) => episode.level === level),
-          ] as [string, Episode[]],
-      )
-      .filter(([, items]) => items.length > 0);
-  }, [groupByLevel, levels, visibleEpisodes]);
 
   const savePosition = useCallback((episodeId: number, position: number) => {
     const positions = readNumberMap(STORAGE.positions);
@@ -594,9 +576,6 @@ export default function Home() {
       if (typeof savedSettings.autoplayNext === "boolean") {
         setAutoplayNext(savedSettings.autoplayNext);
       }
-      if (typeof savedSettings.groupByLevel === "boolean") {
-        setGroupByLevel(savedSettings.groupByLevel);
-      }
       if (
         savedSettings.selectedLevel === "All" ||
         LEVEL_ORDER.includes(savedSettings.selectedLevel ?? "")
@@ -672,7 +651,6 @@ export default function Home() {
     const settings: PersistedSettings = {
       loop,
       autoplayNext,
-      groupByLevel,
       selectedLevel,
       completionFilter,
       transcriptVisible,
@@ -682,7 +660,6 @@ export default function Home() {
   }, [
     autoplayNext,
     completionFilter,
-    groupByLevel,
     loop,
     playbackRate,
     selectedLevel,
@@ -978,15 +955,6 @@ export default function Home() {
             })}
           </div>
 
-          <div className="list-options">
-            <button
-              className={groupByLevel ? "is-selected" : ""}
-              onClick={() => setGroupByLevel((value) => !value)}
-              aria-pressed={groupByLevel}
-            >
-              Group levels
-            </button>
-          </div>
         </div>
 
         <div className="episode-list" ref={episodeListRef}>
@@ -994,25 +962,15 @@ export default function Home() {
             <span>{visibleEpisodes.length} episodes</span>
             <span>{completedIds.length} finished</span>
           </div>
-          {groupedEpisodes.map(([group, items]) => (
-            <section className="episode-group" key={group}>
-              {groupByLevel && (
-                <div className="group-heading">
-                  <h2>{group}</h2>
-                  <span>{items.length}</span>
-                </div>
-              )}
-              {items.map((episode) => (
-                <EpisodeRow
-                  key={episode.id}
-                  episode={episode}
-                  active={episode.id === currentId}
-                  completed={completedIdSet.has(episode.id)}
-                  onSelect={selectEpisode}
-                  onToggleCompleted={updateCompleted}
-                />
-              ))}
-            </section>
+          {visibleEpisodes.map((episode) => (
+            <EpisodeRow
+              key={episode.id}
+              episode={episode}
+              active={episode.id === currentId}
+              completed={completedIdSet.has(episode.id)}
+              onSelect={selectEpisode}
+              onToggleCompleted={updateCompleted}
+            />
           ))}
           {visibleEpisodes.length === 0 && (
             <div className="empty-state">

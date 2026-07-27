@@ -276,28 +276,10 @@ select:focus-visible {
   opacity: 0.65;
 }
 
-.level-filters button.is-selected,
-.list-options button.is-selected {
+.level-filters button.is-selected {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent-strong);
-}
-
-.list-options {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
-}
-
-.list-options button {
-  min-height: 36px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 650;
 }
 
 .episode-list {
@@ -321,35 +303,6 @@ select:focus-visible {
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-}
-
-.episode-group + .episode-group {
-  margin-top: 10px;
-}
-
-.group-heading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 10px 6px;
-}
-
-.group-heading h2 {
-  margin: 0;
-  color: var(--muted);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.group-heading span {
-  min-width: 20px;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--subtle);
-  font: 600 9px var(--font-geist-mono), monospace;
-  text-align: center;
 }
 
 .episode-row {
