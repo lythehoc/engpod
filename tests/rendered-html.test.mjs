@@ -114,7 +114,10 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /JSON\.stringify\(\{ episodeId, position: savedPosition \}\)/);
   assert.match(page, /Math\.max\(safePosition, checkpoint\.position\)/);
   assert.match(page, /savedResume\.position - 10/);
-  assert.match(page, /lastPositionWriteRef\.current > 10_000/);
+  assert.match(page, /POSITION_SAVE_INTERVAL_MS = 1_000/);
+  assert.match(page, /src=\{settingsLoaded \? audioUrl : undefined\}/);
+  assert.match(page, /if \(!audio \|\| !settingsLoaded\) return;/);
+  assert.match(page, /if \(!settingsLoaded\) return;\s*if \(audioRef\.current\)/);
   assert.match(page, /addEventListener\("pagehide", saveCurrentPosition\)/);
   assert.match(page, /addEventListener\("visibilitychange", handleVisibilityChange\)/);
   assert.match(page, /removeItem\(STORAGE\.legacyEpisode\)/);

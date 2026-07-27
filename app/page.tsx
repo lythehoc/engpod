@@ -89,6 +89,7 @@ const COMPLETION_FILTERS: CompletionFilter[] = [
 ];
 const PLAYBACK_RATES = [0.75, 1, 1.25, 1.5, 2];
 const SLEEP_TIMER_OPTIONS = [0, 15, 30, 45, 60] as const;
+const POSITION_SAVE_INTERVAL_MS = 1_000;
 
 type MediaIconName =
   | "replay10"
@@ -875,6 +876,7 @@ export default function Home() {
 
   useEffect(() => {
     const saveCurrentPosition = () => {
+      if (!settingsLoaded) return;
       if (audioRef.current) {
         savePosition(currentId, audioRef.current.currentTime);
       }
@@ -891,7 +893,7 @@ export default function Home() {
         handleVisibilityChange,
       );
     };
-  }, [currentId, savePosition]);
+  }, [currentId, savePosition, settingsLoaded]);
 
   const onLoadedMetadata = () => {
     const audio = audioRef.current;
@@ -925,10 +927,13 @@ export default function Home() {
 
   const onTimeUpdate = () => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !settingsLoaded) return;
     setCurrentTime(audio.currentTime);
     setDuration(audio.duration || 0);
-    if (Date.now() - lastPositionWriteRef.current > 10_000) {
+    if (
+      Date.now() - lastPositionWriteRef.current >
+      POSITION_SAVE_INTERVAL_MS
+    ) {
       lastPositionWriteRef.current = Date.now();
       savePosition(currentId, audio.currentTime);
     }
@@ -964,7 +969,7 @@ export default function Home() {
     <main className="app-shell">
       <audio
         ref={audioRef}
-        src={audioUrl}
+        src={settingsLoaded ? audioUrl : undefined}
         preload="metadata"
         loop={false}
         onLoadedMetadata={onLoadedMetadata}
