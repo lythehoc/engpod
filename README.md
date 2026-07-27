@@ -11,7 +11,7 @@ where you stopped.
 ## Highlights
 
 - Tap any episode to play, then resume later from the saved position
-- Search, sort, shuffle, filter, and group 365 lessons by level
+- Search, shuffle, and filter 365 lessons by level and completion
 - Read transcripts and vocabulary while saving your playback preferences
 - Private, account-free, and comfortable on desktop or mobile
 
@@ -25,18 +25,6 @@ npm run dev
 ```
 
 Open `http://localhost:3000`.
-
-## Quality checks
-
-The `tests` folder contains automated regression checks for the episode
-catalog, transcripts, player behavior, mobile layout, and GitHub Pages output.
-GitHub Actions runs these checks before publishing, and the folder itself is
-not part of the deployed website.
-
-```bash
-npm run lint
-npm test
-```
 
 ## Credits
 
