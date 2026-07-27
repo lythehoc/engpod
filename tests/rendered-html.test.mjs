@@ -116,11 +116,12 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /COMPLETION_FILTERS\.includes/);
   assert.match(page, /completionFilter === "finished"/);
   assert.match(page, /completionFilter === "unfinished"/);
-  assert.match(page, /value="unfinished-first">Not finished first/);
-  assert.match(page, /value="finished-first">Finished first/);
+  assert.match(page, /return \[\.\.\.filtered\]\.sort\(\(a, b\) => a\.id - b\.id\)/);
+  assert.doesNotMatch(page, /SortMode|sortMode|Sort episodes|<select/);
   assert.match(page, /aria-label="Filter by completion"/);
   assert.match(page, /\["unfinished", "Not finished"\]/);
   assert.match(page, /\["finished", "Finished"\]/);
+  assert.match(page, /setSelectedLevel\("All"\);\s*setCompletionFilter\("all"\);/);
   assert.match(page, /transcriptVisible/);
   assert.match(page, /if \(!transcriptVisible\) return;/);
   assert.match(page, /setTranscript\(""\);\s*setTranscriptLoading\(true\);/);
@@ -192,7 +193,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.completion-filters \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
   assert.match(styles, /\.completion-filters button \{[\s\S]*?min-height: 43px;/);
   assert.doesNotMatch(page, /<span>Sort<\/span>/);
-  assert.doesNotMatch(styles, /\.list-options label > span/);
+  assert.match(styles, /\.list-options \{[^}]*display: flex;[^}]*justify-content: flex-end;/);
+  assert.doesNotMatch(styles, /\.list-options (?:label|select)/);
   assert.match(styles, /--accent: #167d73/);
   assert.match(styles, /--accent: #168f82/);
   assert.doesNotMatch(styles, /#e85d3f|#ff7657|#c94229|#ff9178|#f9d9cc|#3b211c/);

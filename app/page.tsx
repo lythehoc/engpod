@@ -24,12 +24,6 @@ type Episode = {
   transcript_url: string;
 };
 
-type SortMode =
-  | "unfinished-first"
-  | "finished-first"
-  | "number-asc"
-  | "number-desc"
-  | "title";
 type CompletionFilter = "all" | "unfinished" | "finished";
 type Theme = "light" | "dark";
 type PersistedSettings = {
@@ -39,7 +33,6 @@ type PersistedSettings = {
   selectedLevel: string;
   completionFilter: CompletionFilter;
   transcriptVisible: boolean;
-  sortMode: SortMode;
   playbackRate: number;
 };
 
@@ -85,13 +78,6 @@ const STORAGE = {
   theme: "englishpod:theme",
   settings: "englishpod:settings-v1",
 };
-const SORT_MODES: SortMode[] = [
-  "unfinished-first",
-  "finished-first",
-  "number-asc",
-  "number-desc",
-  "title",
-];
 const COMPLETION_FILTERS: CompletionFilter[] = [
   "all",
   "unfinished",
@@ -288,7 +274,6 @@ export default function Home() {
   const [selectedLevel, setSelectedLevel] = useState("All");
   const [completionFilter, setCompletionFilter] =
     useState<CompletionFilter>("all");
-  const [sortMode, setSortMode] = useState<SortMode>("number-asc");
   const [groupByLevel, setGroupByLevel] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [transcriptVisible, setTranscriptVisible] = useState(true);
@@ -358,20 +343,8 @@ export default function Home() {
       return true;
     });
 
-    return [...filtered].sort((a, b) => {
-      const aFinished = Number(completedIdSet.has(a.id));
-      const bFinished = Number(completedIdSet.has(b.id));
-      if (sortMode === "unfinished-first" && aFinished !== bFinished) {
-        return aFinished - bFinished;
-      }
-      if (sortMode === "finished-first" && aFinished !== bFinished) {
-        return bFinished - aFinished;
-      }
-      if (sortMode === "number-desc") return b.id - a.id;
-      if (sortMode === "title") return a.title.localeCompare(b.title);
-      return a.id - b.id;
-    });
-  }, [completedIdSet, completionFilter, matchingEpisodes, sortMode]);
+    return [...filtered].sort((a, b) => a.id - b.id);
+  }, [completedIdSet, completionFilter, matchingEpisodes]);
 
   const groupedEpisodes = useMemo(() => {
     if (!groupByLevel) return [["Episodes", visibleEpisodes]] as [
@@ -642,9 +615,6 @@ export default function Home() {
       if (typeof savedSettings.transcriptVisible === "boolean") {
         setTranscriptVisible(savedSettings.transcriptVisible);
       }
-      if (SORT_MODES.includes(savedSettings.sortMode as SortMode)) {
-        setSortMode(savedSettings.sortMode as SortMode);
-      }
       if (PLAYBACK_RATES.includes(savedSettings.playbackRate ?? 0)) {
         setPlaybackRate(savedSettings.playbackRate ?? 1);
       }
@@ -706,7 +676,6 @@ export default function Home() {
       selectedLevel,
       completionFilter,
       transcriptVisible,
-      sortMode,
       playbackRate,
     };
     localStorage.setItem(STORAGE.settings, JSON.stringify(settings));
@@ -718,7 +687,6 @@ export default function Home() {
     playbackRate,
     selectedLevel,
     settingsLoaded,
-    sortMode,
     transcriptVisible,
   ]);
 
@@ -1011,19 +979,6 @@ export default function Home() {
           </div>
 
           <div className="list-options">
-            <label>
-              <select
-                value={sortMode}
-                onChange={(event) => setSortMode(event.target.value as SortMode)}
-                aria-label="Sort episodes"
-              >
-                <option value="unfinished-first">Not finished first</option>
-                <option value="finished-first">Finished first</option>
-                <option value="number-asc">Oldest first</option>
-                <option value="number-desc">Newest first</option>
-                <option value="title">Title A–Z</option>
-              </select>
-            </label>
             <button
               className={groupByLevel ? "is-selected" : ""}
               onClick={() => setGroupByLevel((value) => !value)}
@@ -1067,6 +1022,7 @@ export default function Home() {
                 onClick={() => {
                   setQuery("");
                   setSelectedLevel("All");
+                  setCompletionFilter("all");
                 }}
               >
                 Clear filters
