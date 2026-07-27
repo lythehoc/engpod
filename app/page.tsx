@@ -24,13 +24,20 @@ type Episode = {
   transcript_url: string;
 };
 
-type SortMode = "number-asc" | "number-desc" | "title";
+type SortMode =
+  | "unfinished-first"
+  | "finished-first"
+  | "number-asc"
+  | "number-desc"
+  | "title";
+type CompletionFilter = "all" | "unfinished" | "finished";
 type Theme = "light" | "dark";
 type PersistedSettings = {
   loop: boolean;
   autoplayNext: boolean;
   groupByLevel: boolean;
   selectedLevel: string;
+  completionFilter: CompletionFilter;
   transcriptVisible: boolean;
   sortMode: SortMode;
   playbackRate: number;
@@ -78,7 +85,18 @@ const STORAGE = {
   theme: "englishpod:theme",
   settings: "englishpod:settings-v1",
 };
-const SORT_MODES: SortMode[] = ["number-asc", "number-desc", "title"];
+const SORT_MODES: SortMode[] = [
+  "unfinished-first",
+  "finished-first",
+  "number-asc",
+  "number-desc",
+  "title",
+];
+const COMPLETION_FILTERS: CompletionFilter[] = [
+  "all",
+  "unfinished",
+  "finished",
+];
 const PLAYBACK_RATES = [0.75, 1, 1.25, 1.5, 2];
 const SLEEP_TIMER_OPTIONS = [0, 15, 30, 45, 60] as const;
 
@@ -268,6 +286,8 @@ export default function Home() {
   const [currentId, setCurrentId] = useState(5);
   const [query, setQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All");
+  const [completionFilter, setCompletionFilter] =
+    useState<CompletionFilter>("all");
   const [sortMode, setSortMode] = useState<SortMode>("number-asc");
   const [groupByLevel, setGroupByLevel] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -305,9 +325,9 @@ export default function Home() {
     [],
   );
 
-  const visibleEpisodes = useMemo(() => {
+  const matchingEpisodes = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    const filtered = episodes.filter((episode) => {
+    return episodes.filter((episode) => {
       const matchesLevel =
         selectedLevel === "All" || episode.level === selectedLevel;
       const matchesQuery =
@@ -317,13 +337,41 @@ export default function Home() {
         String(episode.id).includes(normalized);
       return matchesLevel && matchesQuery;
     });
+  }, [query, selectedLevel]);
+
+  const completionCounts = useMemo(() => {
+    const finished = matchingEpisodes.filter((episode) =>
+      completedIdSet.has(episode.id),
+    ).length;
+    return {
+      all: matchingEpisodes.length,
+      unfinished: matchingEpisodes.length - finished,
+      finished,
+    };
+  }, [completedIdSet, matchingEpisodes]);
+
+  const visibleEpisodes = useMemo(() => {
+    const filtered = matchingEpisodes.filter((episode) => {
+      const finished = completedIdSet.has(episode.id);
+      if (completionFilter === "finished") return finished;
+      if (completionFilter === "unfinished") return !finished;
+      return true;
+    });
 
     return [...filtered].sort((a, b) => {
+      const aFinished = Number(completedIdSet.has(a.id));
+      const bFinished = Number(completedIdSet.has(b.id));
+      if (sortMode === "unfinished-first" && aFinished !== bFinished) {
+        return aFinished - bFinished;
+      }
+      if (sortMode === "finished-first" && aFinished !== bFinished) {
+        return bFinished - aFinished;
+      }
       if (sortMode === "number-desc") return b.id - a.id;
       if (sortMode === "title") return a.title.localeCompare(b.title);
       return a.id - b.id;
     });
-  }, [query, selectedLevel, sortMode]);
+  }, [completedIdSet, completionFilter, matchingEpisodes, sortMode]);
 
   const groupedEpisodes = useMemo(() => {
     if (!groupByLevel) return [["Episodes", visibleEpisodes]] as [
@@ -582,6 +630,15 @@ export default function Home() {
       ) {
         setSelectedLevel(savedSettings.selectedLevel ?? "All");
       }
+      if (
+        COMPLETION_FILTERS.includes(
+          savedSettings.completionFilter as CompletionFilter,
+        )
+      ) {
+        setCompletionFilter(
+          savedSettings.completionFilter as CompletionFilter,
+        );
+      }
       if (typeof savedSettings.transcriptVisible === "boolean") {
         setTranscriptVisible(savedSettings.transcriptVisible);
       }
@@ -647,6 +704,7 @@ export default function Home() {
       autoplayNext,
       groupByLevel,
       selectedLevel,
+      completionFilter,
       transcriptVisible,
       sortMode,
       playbackRate,
@@ -654,6 +712,7 @@ export default function Home() {
     localStorage.setItem(STORAGE.settings, JSON.stringify(settings));
   }, [
     autoplayNext,
+    completionFilter,
     groupByLevel,
     loop,
     playbackRate,
@@ -906,6 +965,30 @@ export default function Home() {
           </label>
 
           <div
+            className="completion-filters"
+            role="group"
+            aria-label="Filter by completion"
+          >
+            {(
+              [
+                ["all", "All"],
+                ["unfinished", "Not finished"],
+                ["finished", "Finished"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                className={completionFilter === value ? "is-selected" : ""}
+                onClick={() => setCompletionFilter(value)}
+                aria-pressed={completionFilter === value}
+              >
+                {label}
+                <span>{completionCounts[value]}</span>
+              </button>
+            ))}
+          </div>
+
+          <div
             className="level-filters"
             aria-label="Filter by level"
             data-drawer-swipe-ignore
@@ -934,6 +1017,8 @@ export default function Home() {
                 onChange={(event) => setSortMode(event.target.value as SortMode)}
                 aria-label="Sort episodes"
               >
+                <option value="unfinished-first">Not finished first</option>
+                <option value="finished-first">Finished first</option>
                 <option value="number-asc">Oldest first</option>
                 <option value="number-desc">Newest first</option>
                 <option value="title">Title A–Z</option>

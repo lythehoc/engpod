@@ -111,6 +111,16 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /englishpod:settings-v1/);
   assert.match(page, /groupByLevel/);
   assert.match(page, /selectedLevel/);
+  assert.match(page, /type CompletionFilter = "all" \| "unfinished" \| "finished"/);
+  assert.match(page, /completionFilter: CompletionFilter/);
+  assert.match(page, /COMPLETION_FILTERS\.includes/);
+  assert.match(page, /completionFilter === "finished"/);
+  assert.match(page, /completionFilter === "unfinished"/);
+  assert.match(page, /value="unfinished-first">Not finished first/);
+  assert.match(page, /value="finished-first">Finished first/);
+  assert.match(page, /aria-label="Filter by completion"/);
+  assert.match(page, /\["unfinished", "Not finished"\]/);
+  assert.match(page, /\["finished", "Finished"\]/);
   assert.match(page, /transcriptVisible/);
   assert.match(page, /if \(!transcriptVisible\) return;/);
   assert.match(page, /setTranscript\(""\);\s*setTranscriptLoading\(true\);/);
@@ -179,6 +189,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(styles, /\.brand-block \{[^}]*padding: 24px 22px 10px;/);
   assert.doesNotMatch(styles, /\.brand-block \{[^}]*border-bottom:/);
   assert.match(styles, /\.library-tools \{[^}]*padding: 10px 16px 12px;/);
+  assert.match(styles, /\.completion-filters \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
+  assert.match(styles, /\.completion-filters button \{[\s\S]*?min-height: 43px;/);
   assert.doesNotMatch(page, /<span>Sort<\/span>/);
   assert.doesNotMatch(styles, /\.list-options label > span/);
   assert.match(styles, /--accent: #167d73/);
