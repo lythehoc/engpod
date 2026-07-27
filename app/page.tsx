@@ -937,7 +937,6 @@ export default function Home() {
   const onEnded = () => {
     resumeCheckpointRef.current = null;
     savePosition(currentId, 0);
-    updateCompleted(currentId, true);
     setIsPlaying(false);
     if (loop && audioRef.current) {
       audioRef.current.currentTime = 0;

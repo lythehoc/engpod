@@ -160,7 +160,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /<span className="episode-number" aria-hidden="true">\s*\{episode\.id\}/);
   assert.doesNotMatch(page, /active \? "▶" : episode\.id/);
   assert.doesNotMatch(page, /now-label|>NOW</);
-  assert.match(page, /updateCompleted\(currentId, true\)/);
+  assert.doesNotMatch(page, /updateCompleted\(currentId, true\)/);
   assert.match(page, /orderedCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
   assert.match(page, /previousCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
   assert.match(page, /unfinishedVisible[\s\S]*?unfinishedAnywhere/);
