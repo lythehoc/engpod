@@ -164,7 +164,10 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(page, /skip-glyph|skip-arrow|⟲|⟳|\|◀|▶\|/);
   assert.doesNotMatch(page, /className="soft-button"|brand-actions/);
   assert.match(page, /className="brand-name"[\s\S]*?className="guide-icon-button"[\s\S]*?className="mobile-close"/);
-  assert.match(page, /className="guide-icon-button"[\s\S]*?onClick=\{\(\) => setHelpOpen\(true\)\}[\s\S]*?aria-label="Open quick guide"[\s\S]*?<span aria-hidden="true">\?<\/span>/);
+  assert.match(page, /type UiIconName = "help" \| "close" \| "sun" \| "moon"/);
+  assert.match(page, /className="guide-icon-button"[\s\S]*?onClick=\{\(\) => setHelpOpen\(true\)\}[\s\S]*?aria-label="Open quick guide"[\s\S]*?<UiIcon name="help" \/>/);
+  assert.match(page, /className="mobile-close"[\s\S]*?<UiIcon name="close" \/>/);
+  assert.match(page, /className="theme-toggle"[\s\S]*?<UiIcon name=\{theme === "dark" \? "sun" : "moon"\} \/>[\s\S]*?\{theme === "dark" \? "Light" : "Dark"\}/);
   assert.doesNotMatch(page, /setSidebarOpen\(false\);\s*setHelpOpen\(true\);/);
   assert.match(page, /querySelector<HTMLElement>\("\.episode-row\.is-active"\)/);
   assert.match(page, /scrollIntoView\(\{[\s\S]*?behavior: "smooth",[\s\S]*?block: "center"/);
@@ -187,7 +190,9 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(styles, /\.brand-row p/);
   assert.doesNotMatch(styles, /\.brand-actions|\.soft-button/);
   assert.match(styles, /\.brand-name \{[^}]*flex: 1;/);
-  assert.match(styles, /\.guide-icon-button,[\s\S]*?\.mobile-close \{[\s\S]*?width: 40px;[\s\S]*?height: 40px;[\s\S]*?border: 0;[\s\S]*?border-radius: 50%;/);
+  assert.match(styles, /\.guide-icon-button,[\s\S]*?\.mobile-close \{[\s\S]*?width: 40px;[\s\S]*?height: 40px;[\s\S]*?border: 1px solid var\(--line\);[\s\S]*?border-radius: 14px;/);
+  assert.match(styles, /\.ui-icon \{[\s\S]*?stroke-width: 1\.9;[\s\S]*?stroke-linecap: round;/);
+  assert.match(styles, /\.theme-toggle \{[\s\S]*?display: inline-flex;[\s\S]*?gap: 7px;/);
   assert.match(styles, /\.guide-icon-button:hover,[\s\S]*?\.mobile-close:hover \{[\s\S]*?background: var\(--surface-3\);/);
   assert.doesNotMatch(styles, /project-disclaimer/);
   assert.doesNotMatch(styles, /resume-note|radial-gradient/);

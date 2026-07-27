@@ -133,8 +133,8 @@ select:focus-visible {
   padding: 0;
   display: grid;
   place-items: center;
-  border: 0;
-  border-radius: 50%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
   background: var(--surface-2);
   color: var(--muted);
   line-height: 1;
@@ -143,13 +143,18 @@ select:focus-visible {
     color 150ms ease;
 }
 
-.guide-icon-button {
-  font: 700 19px/1 var(--font-geist-sans), Arial, sans-serif;
+.ui-icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .mobile-close {
   display: none;
-  font: 400 27px/1 var(--font-geist-sans), Arial, sans-serif;
 }
 
 .library-tools {
@@ -457,6 +462,17 @@ select:focus-visible {
   color: var(--muted);
   font-size: 12px;
   font-weight: 700;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.theme-toggle .ui-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .menu-button {
@@ -1025,6 +1041,7 @@ select:focus-visible {
   .mobile-close:hover {
     background: var(--surface-3);
     color: var(--text);
+    border-color: var(--accent);
   }
 
   .episode-row:hover {

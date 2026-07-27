@@ -92,6 +92,7 @@ type MediaIconName =
   | "pause"
   | "next"
   | "forward10";
+type UiIconName = "help" | "close" | "sun" | "moon";
 
 // Google Material Symbols Rounded, Apache 2.0:
 // https://github.com/google/material-design-icons
@@ -119,6 +120,39 @@ function MediaIcon({ name }: { name: MediaIconName }) {
       focusable="false"
     >
       <path d={MEDIA_ICON_PATHS[name]} />
+    </svg>
+  );
+}
+
+function UiIcon({ name }: { name: UiIconName }) {
+  return (
+    <svg
+      className="ui-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {name === "help" && (
+        <>
+          <path d="M9.1 9a3.15 3.15 0 1 1 4.3 2.94c-.86.34-1.4 1.03-1.4 1.81v.35" />
+          <path d="M12 17.5h.01" />
+        </>
+      )}
+      {name === "close" && (
+        <>
+          <path d="m7 7 10 10" />
+          <path d="M17 7 7 17" />
+        </>
+      )}
+      {name === "sun" && (
+        <>
+          <circle cx="12" cy="12" r="3.5" />
+          <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.28 5.28l1.42 1.42M17.3 17.3l1.42 1.42M18.72 5.28 17.3 6.7M6.7 17.3l-1.42 1.42" />
+        </>
+      )}
+      {name === "moon" && (
+        <path d="M20.2 14.55A8.4 8.4 0 0 1 9.45 3.8 8.4 8.4 0 1 0 20.2 14.55Z" />
+      )}
     </svg>
   );
 }
@@ -881,14 +915,14 @@ export default function Home() {
               aria-label="Open quick guide"
               title="Quick guide"
             >
-              <span aria-hidden="true">?</span>
+              <UiIcon name="help" />
             </button>
             <button
               className="mobile-close"
               onClick={() => setSidebarOpen(false)}
               aria-label="Close episode library"
             >
-              ×
+              <UiIcon name="close" />
             </button>
           </div>
         </div>
@@ -1013,10 +1047,13 @@ export default function Home() {
               <span className="topbar-label">Random</span>
             </button>
             <button
+              className="theme-toggle"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+              title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
             >
-              {theme === "dark" ? "☀" : "☾"}
+              <UiIcon name={theme === "dark" ? "sun" : "moon"} />
+              <span>{theme === "dark" ? "Light" : "Dark"}</span>
             </button>
           </div>
         </header>
