@@ -187,7 +187,8 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(styles, /\.brand-row p/);
   assert.doesNotMatch(styles, /\.brand-actions|\.soft-button/);
   assert.match(styles, /\.brand-name \{[^}]*flex: 1;/);
-  assert.match(styles, /\.guide-icon-button,[\s\S]*?\.mobile-close \{[\s\S]*?width: 40px;[\s\S]*?height: 40px;/);
+  assert.match(styles, /\.guide-icon-button,[\s\S]*?\.mobile-close \{[\s\S]*?width: 40px;[\s\S]*?height: 40px;[\s\S]*?border: 0;[\s\S]*?border-radius: 50%;/);
+  assert.match(styles, /\.guide-icon-button:hover,[\s\S]*?\.mobile-close:hover \{[\s\S]*?background: var\(--surface-3\);/);
   assert.doesNotMatch(styles, /project-disclaimer/);
   assert.doesNotMatch(styles, /resume-note|radial-gradient/);
   assert.match(styles, /\.app-shell \{[\s\S]*?background: var\(--bg\);/);
