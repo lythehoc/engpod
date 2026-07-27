@@ -109,6 +109,17 @@ test("auto-plays selections and safely persists player preferences", async () =>
 
   assert.match(page, /autoplay = true/);
   assert.match(page, /englishpod:settings-v1/);
+  assert.match(page, /resume: "englishpod:last-resume"/);
+  assert.match(page, /type ResumeRecord = \{\s*episodeId: number;\s*position: number;/);
+  assert.match(page, /JSON\.stringify\(\{ episodeId, position: savedPosition \}\)/);
+  assert.match(page, /Math\.max\(safePosition, checkpoint\.position\)/);
+  assert.match(page, /savedResume\.position - 10/);
+  assert.match(page, /lastPositionWriteRef\.current > 10_000/);
+  assert.match(page, /addEventListener\("pagehide", saveCurrentPosition\)/);
+  assert.match(page, /addEventListener\("visibilitychange", handleVisibilityChange\)/);
+  assert.match(page, /removeItem\(STORAGE\.legacyEpisode\)/);
+  assert.match(page, /removeItem\(STORAGE\.legacyPositions\)/);
+  assert.doesNotMatch(page, /positions\[String\(episodeId\)\]\s*=/);
   assert.doesNotMatch(page, /groupByLevel|Group levels|groupedEpisodes/);
   assert.match(page, /selectedLevel/);
   assert.match(page, /type CompletionFilter = "all" \| "unfinished" \| "finished"/);

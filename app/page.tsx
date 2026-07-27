@@ -26,6 +26,10 @@ type Episode = {
 
 type CompletionFilter = "all" | "unfinished" | "finished";
 type Theme = "light" | "dark";
+type ResumeRecord = {
+  episodeId: number;
+  position: number;
+};
 type PersistedSettings = {
   loop: boolean;
   autoplayNext: boolean;
@@ -71,8 +75,9 @@ const EXTERNAL_AUDIO_BASES = [
   ...ARCHIVE_AUDIO_FALLBACKS,
 ];
 const STORAGE = {
-  episode: "englishpod:last-episode",
-  positions: "englishpod:positions",
+  resume: "englishpod:last-resume",
+  legacyEpisode: "englishpod:last-episode",
+  legacyPositions: "englishpod:positions",
   completed: "englishpod:completed",
   theme: "englishpod:theme",
   settings: "englishpod:settings-v1",
@@ -184,6 +189,44 @@ function readNumberMap(key: string): Record<string, number> {
   } catch {
     return {};
   }
+}
+
+function readResumeRecord(): ResumeRecord | null {
+  try {
+    const parsed: unknown = JSON.parse(
+      localStorage.getItem(STORAGE.resume) ?? "null",
+    );
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      "episodeId" in parsed &&
+      "position" in parsed
+    ) {
+      const episodeId = (parsed as ResumeRecord).episodeId;
+      const position = (parsed as ResumeRecord).position;
+      if (
+        Number.isInteger(episodeId) &&
+        EPISODE_BY_ID.has(episodeId) &&
+        Number.isFinite(position) &&
+        position >= 0
+      ) {
+        return { episodeId, position };
+      }
+    }
+  } catch {
+    // Fall through to the legacy one-time migration below.
+  }
+
+  const legacyEpisodeId = Number(
+    localStorage.getItem(STORAGE.legacyEpisode),
+  );
+  if (!EPISODE_BY_ID.has(legacyEpisodeId)) return null;
+  const legacyPosition =
+    readNumberMap(STORAGE.legacyPositions)[String(legacyEpisodeId)] ?? 0;
+  return {
+    episodeId: legacyEpisodeId,
+    position: Math.max(0, legacyPosition),
+  };
 }
 
 function readSettings(): Partial<PersistedSettings> {
@@ -302,6 +345,7 @@ export default function Home() {
   const playerSwipeStartRef = useRef<{ x: number; y: number } | null>(null);
   const pendingAutoplayRef = useRef(false);
   const lastPositionWriteRef = useRef(0);
+  const resumeCheckpointRef = useRef<ResumeRecord | null>(null);
   const [currentId, setCurrentId] = useState(5);
   const [query, setQuery] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All");
@@ -379,10 +423,25 @@ export default function Home() {
   }, [completedIdSet, completionFilter, matchingEpisodes]);
 
   const savePosition = useCallback((episodeId: number, position: number) => {
-    const positions = readNumberMap(STORAGE.positions);
-    positions[String(episodeId)] = Math.max(0, Math.floor(position));
-    localStorage.setItem(STORAGE.positions, JSON.stringify(positions));
-    localStorage.setItem(STORAGE.episode, String(episodeId));
+    const safePosition = Math.max(
+      0,
+      Number.isFinite(position) ? Math.floor(position) : 0,
+    );
+    const checkpoint = resumeCheckpointRef.current;
+    const savedPosition =
+      checkpoint?.episodeId === episodeId
+        ? Math.max(safePosition, checkpoint.position)
+        : safePosition;
+    if (
+      checkpoint?.episodeId === episodeId &&
+      safePosition >= checkpoint.position
+    ) {
+      resumeCheckpointRef.current = null;
+    }
+    localStorage.setItem(
+      STORAGE.resume,
+      JSON.stringify({ episodeId, position: savedPosition }),
+    );
   }, []);
 
   const selectEpisode = useCallback(
@@ -391,6 +450,8 @@ export default function Home() {
         savePosition(currentId, audioRef.current.currentTime);
         audioRef.current.pause();
       }
+      resumeCheckpointRef.current = null;
+      savePosition(episode.id, 0);
       pendingAutoplayRef.current = autoplay;
       setAudioSourceIndex(0);
       setCurrentId(episode.id);
@@ -401,7 +462,6 @@ export default function Home() {
       setTranscriptLoading(true);
       setTranscriptError(false);
       setSidebarOpen(false);
-      localStorage.setItem(STORAGE.episode, String(episode.id));
     },
     [currentId, savePosition],
   );
@@ -491,19 +551,25 @@ export default function Home() {
         setIsBuffering(false);
       }
     } else {
+      savePosition(currentId, audio.currentTime);
       audio.pause();
       setIsPlaying(false);
     }
-  }, []);
+  }, [currentId, savePosition]);
 
-  const seek = useCallback((seconds: number) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = Math.min(
-      Math.max(0, audio.currentTime + seconds),
-      audio.duration || Infinity,
-    );
-  }, []);
+  const seek = useCallback(
+    (seconds: number) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      resumeCheckpointRef.current = null;
+      audio.currentTime = Math.min(
+        Math.max(0, audio.currentTime + seconds),
+        audio.duration || Infinity,
+      );
+      savePosition(currentId, audio.currentTime);
+    },
+    [currentId, savePosition],
+  );
 
   const cycleSleepTimer = useCallback(() => {
     const index = SLEEP_TIMER_OPTIONS.indexOf(
@@ -586,13 +652,16 @@ export default function Home() {
     let cancelled = false;
     queueMicrotask(() => {
       if (cancelled) return;
-      const savedId = Number(localStorage.getItem(STORAGE.episode));
+      const savedResume = readResumeRecord();
       const savedTheme = localStorage.getItem(STORAGE.theme) as Theme | null;
       const savedCompleted = readNumberMap(STORAGE.completed);
       const savedSettings = readSettings();
-      if (episodes.some((episode) => episode.id === savedId)) {
-        setCurrentId(savedId);
+      if (savedResume) {
+        setCurrentId(savedResume.episodeId);
+        localStorage.setItem(STORAGE.resume, JSON.stringify(savedResume));
       }
+      localStorage.removeItem(STORAGE.legacyEpisode);
+      localStorage.removeItem(STORAGE.legacyPositions);
       setCompletedIds(
         Object.entries(savedCompleted)
           .filter(([, value]) => Boolean(value))
@@ -667,7 +736,11 @@ export default function Home() {
     updateRemainingTime();
     const intervalId = window.setInterval(updateRemainingTime, 1_000);
     const timerId = window.setTimeout(() => {
-      audioRef.current?.pause();
+      const audio = audioRef.current;
+      if (audio) {
+        savePosition(currentId, audio.currentTime);
+        audio.pause();
+      }
       setIsPlaying(false);
       setIsBuffering(false);
       setSleepTimerMinutes(0);
@@ -678,7 +751,7 @@ export default function Home() {
       window.clearInterval(intervalId);
       window.clearTimeout(timerId);
     };
-  }, [sleepTimerEndAt]);
+  }, [currentId, savePosition, sleepTimerEndAt]);
 
   useEffect(() => {
     if (!settingsLoaded) return;
@@ -779,7 +852,11 @@ export default function Home() {
       void togglePlayback();
     });
     navigator.mediaSession.setActionHandler("pause", () => {
-      audioRef.current?.pause();
+      const audio = audioRef.current;
+      if (audio) {
+        savePosition(currentId, audio.currentTime);
+        audio.pause();
+      }
       setIsPlaying(false);
     });
     navigator.mediaSession.setActionHandler("seekbackward", () => seek(-10));
@@ -788,20 +865,32 @@ export default function Home() {
     navigator.mediaSession.setActionHandler("nexttrack", () => nextEpisode());
   }, [
     currentEpisode,
+    currentId,
     nextEpisode,
     previousEpisode,
+    savePosition,
     seek,
     togglePlayback,
   ]);
 
   useEffect(() => {
-    const handlePageHide = () => {
+    const saveCurrentPosition = () => {
       if (audioRef.current) {
         savePosition(currentId, audioRef.current.currentTime);
       }
     };
-    window.addEventListener("pagehide", handlePageHide);
-    return () => window.removeEventListener("pagehide", handlePageHide);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") saveCurrentPosition();
+    };
+    window.addEventListener("pagehide", saveCurrentPosition);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      window.removeEventListener("pagehide", saveCurrentPosition);
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibilityChange,
+      );
+    };
   }, [currentId, savePosition]);
 
   const onLoadedMetadata = () => {
@@ -809,10 +898,21 @@ export default function Home() {
     if (!audio) return;
     setDuration(audio.duration || 0);
     audio.playbackRate = playbackRate;
-    const savedPosition = readNumberMap(STORAGE.positions)[String(currentId)] ?? 0;
-    if (savedPosition > 0 && savedPosition < audio.duration - 5) {
-      audio.currentTime = savedPosition;
-      setCurrentTime(savedPosition);
+    const savedResume = readResumeRecord();
+    if (
+      savedResume?.episodeId === currentId &&
+      savedResume.position > 0 &&
+      audio.duration > 0
+    ) {
+      const resumeTime = Math.min(
+        Math.max(0, savedResume.position - 10),
+        Math.max(0, audio.duration - 0.25),
+      );
+      resumeCheckpointRef.current = savedResume;
+      audio.currentTime = resumeTime;
+      setCurrentTime(resumeTime);
+    } else {
+      resumeCheckpointRef.current = null;
     }
     if (pendingAutoplayRef.current) {
       pendingAutoplayRef.current = false;
@@ -828,13 +928,15 @@ export default function Home() {
     if (!audio) return;
     setCurrentTime(audio.currentTime);
     setDuration(audio.duration || 0);
-    if (Date.now() - lastPositionWriteRef.current > 5000) {
+    if (Date.now() - lastPositionWriteRef.current > 10_000) {
       lastPositionWriteRef.current = Date.now();
       savePosition(currentId, audio.currentTime);
     }
   };
 
   const onEnded = () => {
+    resumeCheckpointRef.current = null;
+    savePosition(currentId, 0);
     updateCompleted(currentId, true);
     setIsPlaying(false);
     if (loop && audioRef.current) {
@@ -849,8 +951,10 @@ export default function Home() {
     const audio = audioRef.current;
     if (!audio) return;
     const nextTime = Number(event.target.value);
+    resumeCheckpointRef.current = null;
     audio.currentTime = nextTime;
     setCurrentTime(nextTime);
+    savePosition(currentId, nextTime);
   };
 
   const preventSliderKeys = (event: ReactKeyboardEvent<HTMLInputElement>) => {
