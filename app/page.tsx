@@ -54,9 +54,6 @@ const LEVEL_ORDER = [
 const EPISODE_BY_ID = new Map(
   episodes.map((episode) => [episode.id, episode]),
 );
-const EPISODE_INDEX_BY_ID = new Map(
-  episodes.map((episode, index) => [episode.id, index]),
-);
 const EPISODE_COUNT_BY_LEVEL = new Map(
   LEVEL_ORDER.map((level) => [
     level,
@@ -378,7 +375,6 @@ export default function Home() {
   const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   const currentEpisode = EPISODE_BY_ID.get(currentId) ?? episodes[0];
-  const currentIndex = EPISODE_INDEX_BY_ID.get(currentId) ?? 0;
   const completedIdSet = useMemo(() => new Set(completedIds), [completedIds]);
   const audioFileName = `${currentEpisode.transcript_id}pb.mp3`;
   const audioUrl = `${EXTERNAL_AUDIO_BASES[audioSourceIndex]}/${audioFileName}`;
@@ -426,6 +422,10 @@ export default function Home() {
 
     return [...filtered].sort((a, b) => a.id - b.id);
   }, [completedIdSet, completionFilter, matchingEpisodes]);
+
+  const canNavigateFilteredList = visibleEpisodes.some(
+    (episode) => episode.id !== currentId,
+  );
 
   const savePosition = useCallback((episodeId: number, position: number) => {
     const safePosition = Math.max(
@@ -477,33 +477,37 @@ export default function Home() {
 
   const nextEpisode = useCallback(
     (autoplay = true) => {
-      const orderedCandidates = Array.from(
-        { length: episodes.length },
-        (_, offset) => episodes[(currentIndex + offset + 1) % episodes.length],
+      if (visibleEpisodes.length === 0) return;
+      const visibleIndex = visibleEpisodes.findIndex(
+        (episode) => episode.id === currentId,
       );
       const next =
-        orderedCandidates.find(
-          (episode) => !completedIds.includes(episode.id),
-        ) ?? orderedCandidates[0];
-      selectEpisode(next, autoplay);
+        visibleIndex >= 0
+          ? visibleEpisodes[(visibleIndex + 1) % visibleEpisodes.length]
+          : visibleEpisodes.find((episode) => episode.id > currentId) ??
+            visibleEpisodes[0];
+      if (next.id !== currentId) selectEpisode(next, autoplay);
     },
-    [completedIds, currentIndex, selectEpisode],
+    [currentId, selectEpisode, visibleEpisodes],
   );
 
   const previousEpisode = useCallback(() => {
-    const previousCandidates = Array.from(
-      { length: episodes.length },
-      (_, offset) =>
-        episodes[
-          (currentIndex - offset - 1 + episodes.length) % episodes.length
-        ],
+    if (visibleEpisodes.length === 0) return;
+    const visibleIndex = visibleEpisodes.findIndex(
+      (episode) => episode.id === currentId,
     );
     const previous =
-      previousCandidates.find(
-        (episode) => !completedIds.includes(episode.id),
-      ) ?? previousCandidates[0];
-    selectEpisode(previous);
-  }, [completedIds, currentIndex, selectEpisode]);
+      visibleIndex >= 0
+        ? visibleEpisodes[
+            (visibleIndex - 1 + visibleEpisodes.length) %
+              visibleEpisodes.length
+          ]
+        : [...visibleEpisodes]
+            .reverse()
+            .find((episode) => episode.id < currentId) ??
+          visibleEpisodes.at(-1);
+    if (previous && previous.id !== currentId) selectEpisode(previous);
+  }, [currentId, selectEpisode, visibleEpisodes]);
 
   const shuffleEpisode = useCallback(() => {
     const pool = visibleEpisodes.length > 1 ? visibleEpisodes : episodes;
@@ -1362,6 +1366,8 @@ export default function Home() {
                 className="track-button"
                 onClick={previousEpisode}
                 aria-label="Previous episode"
+                title="Previous episode in filtered list"
+                disabled={!canNavigateFilteredList}
               >
                 <MediaIcon name="previous" />
               </button>
@@ -1382,6 +1388,8 @@ export default function Home() {
                 className="track-button"
                 onClick={() => nextEpisode()}
                 aria-label="Next episode"
+                title="Next episode in filtered list"
+                disabled={!canNavigateFilteredList}
               >
                 <MediaIcon name="next" />
               </button>

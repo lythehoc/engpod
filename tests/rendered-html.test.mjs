@@ -175,8 +175,11 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.doesNotMatch(page, /active \? "▶" : episode\.id/);
   assert.doesNotMatch(page, /now-label|>NOW</);
   assert.doesNotMatch(page, /updateCompleted\(currentId, true\)/);
-  assert.match(page, /orderedCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
-  assert.match(page, /previousCandidates\.find\([\s\S]*?!completedIds\.includes\(episode\.id\)/);
+  assert.match(page, /const nextEpisode = useCallback\([\s\S]*?visibleEpisodes\.findIndex\([\s\S]*?visibleEpisodes\[\(visibleIndex \+ 1\) % visibleEpisodes\.length\]/);
+  assert.match(page, /const previousEpisode = useCallback\([\s\S]*?visibleEpisodes\.findIndex\([\s\S]*?\.reverse\(\)[\s\S]*?\.find\(\(episode\) => episode\.id < currentId\)/);
+  assert.doesNotMatch(page, /orderedCandidates|previousCandidates/);
+  assert.match(page, /title="Previous episode in filtered list"[\s\S]*?disabled=\{!canNavigateFilteredList\}/);
+  assert.match(page, /title="Next episode in filtered list"[\s\S]*?disabled=\{!canNavigateFilteredList\}/);
   assert.match(page, /unfinishedVisible[\s\S]*?unfinishedAnywhere/);
   assert.match(page, /<span className="speed-value">\{playbackRate\}×<\/span>/);
   assert.match(page, /<span className="control-label">Speed<\/span>/);
