@@ -245,6 +245,14 @@ function sanitizeTranscriptHtml(html: string) {
   // Every source file repeats the current episode title as its first H1.
   // The page already shows that title prominently, so remove only this copy.
   parsed.body.querySelector("h1")?.remove();
+  // Source files list the dialogue first. Show the vocabulary notes first and
+  // move the dialogue below them under its own heading.
+  const dialogue = parsed.body.querySelector(".dialogue-block");
+  if (dialogue) {
+    const transcriptHeading = parsed.createElement("h2");
+    transcriptHeading.textContent = "Transcript";
+    parsed.body.append(transcriptHeading, dialogue);
+  }
   const allowedTags = new Set([
     "H1",
     "H2",
@@ -1291,7 +1299,7 @@ export default function Home() {
               <div className="card-heading">
                 <div>
                   <span className="section-kicker">READ ALONG</span>
-                  <h3>Transcript & vocabulary</h3>
+                  <h3>Vocabulary & transcript</h3>
                 </div>
                 <button
                   onClick={() => setTranscriptVisible((value) => !value)}

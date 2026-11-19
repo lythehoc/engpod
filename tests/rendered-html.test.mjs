@@ -153,6 +153,7 @@ test("auto-plays selections and safely persists player preferences", async () =>
   assert.match(page, /setTimeout\(\(\) => controller\.abort\(\), 10_000\)/);
   assert.match(page, /\[currentEpisode\.transcript_id, transcriptVisible\]/);
   assert.match(page, /sanitizeTranscriptHtml\(html\)/);
+  assert.match(page, /parsed\.body\.append\(transcriptHeading, dialogue\)/);
   assert.match(page, /const EpisodeRow = memo\(function EpisodeRow/);
   assert.match(page, /const completedIdSet = useMemo\(\(\) => new Set\(completedIds\)/);
   assert.match(page, /completed=\{completedIdSet\.has\(episode\.id\)\}/);

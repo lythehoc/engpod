@@ -632,6 +632,12 @@ select:focus-visible {
   letter-spacing: -0.035em;
 }
 
+.transcript-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
 .dialogue-block {
   display: grid;
   gap: 10px;
